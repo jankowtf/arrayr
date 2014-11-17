@@ -1,3 +1,20 @@
+# CHANGES IN arrayr VERSION 0.1.2
+
+## NEW FEATURES
+
+## BUG FIXES
+
+- fixed: #2
+  inconsistency with respect to numerical input of certain methods
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.1
 
 ## NEW FEATURES

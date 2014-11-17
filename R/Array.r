@@ -31,7 +31,8 @@ Array <- R6Class(
         self$.array <- value
       }
     },
-    add = function(..., id = character(), dups = TRUE, strict = 0) {      
+    add = function(..., id = character(), dups = TRUE, strict = 0) {  
+      id <- as.character(id)
       value <- list(...)
       if (!length(id)) {
         nms <- names(self$.array)
@@ -141,6 +142,8 @@ Array <- R6Class(
       out
     },
     copy = function(from, to, dups = TRUE, strict = 0) {
+      from <- as.character(from)
+      to <- as.character(to)
       length_diff <- length(from) != length(to) 
       has_dups <- !dups && any(idx_dups <- to %in% names(self$.array))
       out <- if (length_diff || has_dups) {
@@ -217,17 +220,18 @@ Array <- R6Class(
       }
       out
     },
-    clear = function(id) {
+    clear = function() {
       self$.array <- structure(list(), names = character())
       TRUE
     },
     exists = function(id) {
-      sapply(id, function(ii) {
+      sapply(as.character(id), function(ii) {
         ii %in% names(self$.array)
       })
     },
     get = function(id = character(), default = NULL, inner = TRUE, 
                    simplify = TRUE, strict = 0) {
+      id <- as.character(id)
       out <- if (strict > 0 && !all(idx <- id %in% names(self$.array))) {
         if (strict == 0) {
           TRUE
@@ -279,6 +283,7 @@ Array <- R6Class(
       out
     },
     index = function(id, strict = 0, simplify = FALSE) {
+      id <- as.character(id)
       idx <- sort(id) %in% sort(names(self$.array))
       out <- if (strict > 0 && !all(idx)) {
         if (strict == 0) {
@@ -322,6 +327,7 @@ Array <- R6Class(
         out
     },
     rm = function(id, strict = 0) {
+      id <- as.character(id)
       nms <- names(self$.array)
       idx <- nms %in% id
       names(idx) <- nms   
