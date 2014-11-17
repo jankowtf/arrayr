@@ -14,6 +14,12 @@ inst$.array
 inst <- Array$new(list(c = 1), list(d = 2))
 inst$.array
 
+## Atomic and mixed //
+inst <- Array$new(a = 1, b = 2)
+inst$.array
+inst <- Array$new(a = 1, list(b = 2))
+inst$.array
+
 ##------------------------------------------------------------------------------
 ## Add //
 ##------------------------------------------------------------------------------

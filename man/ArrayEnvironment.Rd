@@ -3,7 +3,7 @@
 \name{ArrayEnvironment}
 \alias{ArrayEnvironment}
 \title{Class: ArrayEnvironment}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007ed7c80> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007ed7200> 
  - attr(*, "name")= chr "ArrayEnvironment_generator"
 }}
 \usage{
@@ -41,6 +41,12 @@ inst <- ArrayEnvironment$new(array = list(a = 1, b = 2))
 inst$get(as_list = TRUE)
 inst <- ArrayEnvironment$new(list(c = 1), list(d = 2))
 inst$get(as_list = TRUE)
+
+## Atomic and mixed //
+inst <- ArrayEnvironment$new(a = 1, b = 2)
+as.list(inst$.array)
+inst <- ArrayEnvironment$new(a = 1, list(b = 2))
+as.list(inst$.array)
 
 ##------------------------------------------------------------------------------
 ## Add //

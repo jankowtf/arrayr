@@ -21,6 +21,14 @@ test_that("ArrayEnvironment/initialize/explicit", {
   expect_identical(inst$.array$a, 1)
   expect_identical(inst$.array$b, 2)
   
+  ## Atomic //
+  expect_is(inst <- ArrayEnvironment$new(a = 1, b = 2), "ArrayEnvironment")
+  expect_identical(as.list(inst$.array), list(a = 1, b = 2))
+  expect_is(inst <- ArrayEnvironment$new(a = 1, list(b = 2)), "ArrayEnvironment")
+  expect_identical(as.list(inst$.array), list(a = 1, "1" = list(b = 2)))
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1), list(b = 2)), "ArrayEnvironment")
+  expect_identical(as.list(inst$.array), list(a = 1, b = 2))
+  
 })
 
 test_that("ArrayEnvironment/initialize/explicit/unnamed", {

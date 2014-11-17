@@ -22,12 +22,12 @@ Array <- R6Class(
       self$.array <- structure(list(), names = character())
       value <- list(...)
       value_length <- length(value)
-      if (value_length > 0) {
-        if (length(value) == 1) {
+      if (value_length > 0)  {
+        if (value_length == 1 && is.null(names(value))) {
           value <- value[[1]]
-        } else if (length(value) >= 2) {
+        } else if (value_length >= 2 && is.null(names(value))) {
           value <- unlist(value,recursive = FALSE)
-        }
+        }        
         self$.array <- value
       }
     },

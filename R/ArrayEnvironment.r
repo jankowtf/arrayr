@@ -22,9 +22,9 @@ ArrayEnvironment <- R6Class(
       value <<- list(...)
       value_length <- length(value)
       if (value_length > 0)  {
-        if (value_length == 1) {
+        if (value_length == 1 && is.null(names(value))) {
           value <- value[[1]]
-        } else if (value_length >= 2) {
+        } else if (value_length >= 2 && is.null(names(value))) {
           value <- unlist(value,recursive = FALSE)
         }        
         self$.set(value)

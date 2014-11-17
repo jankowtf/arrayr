@@ -21,6 +21,12 @@ inst$get(as_list = TRUE)
 inst <- ArrayEnvironment$new(list(c = 1), list(d = 2))
 inst$get(as_list = TRUE)
 
+## Atomic and mixed //
+inst <- ArrayEnvironment$new(a = 1, b = 2)
+as.list(inst$.array)
+inst <- ArrayEnvironment$new(a = 1, list(b = 2))
+as.list(inst$.array)
+
 ##------------------------------------------------------------------------------
 ## Add //
 ##------------------------------------------------------------------------------
