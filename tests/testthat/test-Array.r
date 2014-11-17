@@ -48,6 +48,21 @@ test_that("Array/add/single", {
   expect_true(inst$add(list(b = 2)))
   expect_identical(inst$.array, list(a = 1, b = 2, b = 2))
   
+  ## Atomic //
+  expect_is(inst <- Array$new(), "Array")
+  expect_true(inst$add(1))
+  expect_equivalent(inst$.array, list(1))
+  expect_is(inst <- Array$new(), "Array")
+  expect_true(inst$add(new.env()))
+  expect_is(res <- inst$.array, "list")
+  expect_is(res[[1]], "environment")
+  expect_true(inst$add("a" = new.env()))
+  expect_is(res <- inst$.array, "list")
+  expect_is(res[[1]], "environment")
+  expect_true(inst$add("b" = 1))
+  expect_is(res <- inst$.array, "list")
+  expect_identical(res[[3]], 1)
+  
 })
 
 test_that("Array/add/multiple", {

@@ -33,11 +33,15 @@ Array <- R6Class(
     },
     add = function(..., id = character(), dups = TRUE, strict = 0) {  
       id <- as.character(id)
-      value <- list(...)
+      value <- list(...)   
       if (!length(id)) {
         nms <- names(self$.array)
-        out <- unlist(lapply(value, function(ii) {
-          value <- ii
+        out <- unlist(lapply(seq(along = value), function(ii) {
+          name <- names(value[ii])
+          value <- value[[ii]]
+          if (!is.null(name)) {
+            value <- structure(list(value), names = name)
+          }
           out <- if (!dups && any(names(value) %in% nms)) {
             if (strict == 0) {
               FALSE
@@ -65,7 +69,11 @@ Array <- R6Class(
             }
           } else {
             self$.array <- c(self$.array, value)  
-            structure(rep(TRUE, length(value)), names = names(value)) 
+            if (inherits(value, "environment")) {
+              structure(rep(TRUE, 1), names = names(value)) 
+            } else {
+              structure(rep(TRUE, length(value)), names = names(value)) 
+            }
           }
           out
         }))
@@ -133,7 +141,11 @@ Array <- R6Class(
               }
             } else {
               self$.array <- c(self$.array, value)  
-              structure(rep(TRUE, length(value)), names = names(value))
+              if (inherits(value, "environment")) {
+                structure(rep(TRUE, 1), names = names(value)) 
+              } else {
+                structure(rep(TRUE, length(value)), names = names(value)) 
+              }
             }
           })
         }

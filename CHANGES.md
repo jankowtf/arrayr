@@ -1,3 +1,8 @@
+# Version 0.1.3
+ - fixed #2
+
+----------
+
 # Version 0.1.2
  - Merge branch 'release-0.1.1'
  - build v0.1.1

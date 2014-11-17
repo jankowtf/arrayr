@@ -50,6 +50,17 @@ inst$get(as_list = TRUE)
 ## --> note that the implementation of `add()` differs from that of 
 ## class `Array`
 
+## Single atomic //
+inst <- ArrayEnvironment$new()
+inst$add(1)
+as.list(inst$.array)
+inst$add(new.env())
+as.list(inst$.array)
+inst$add(a = new.env())
+as.list(inst$.array)
+inst$add(b = 1)
+as.list(inst$.array)
+
 ## Multiple //
 inst <- ArrayEnvironment$new()
 inst$add(list(a = 1), list(b = 2))

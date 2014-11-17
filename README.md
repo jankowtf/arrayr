@@ -71,6 +71,20 @@ inst$.array
 inst$add(list(b = 2))
 inst$.array
 ```
+#### Single atomic 
+
+```
+## Single atomic //
+inst <- Array$new()
+inst$add(1)
+inst$.array
+inst$add(new.env())
+inst$.array
+inst$add(a = new.env())
+inst$.array
+inst$add(b = 1)
+inst$.array
+```
 
 #### Multiple
 
