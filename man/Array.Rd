@@ -3,7 +3,7 @@
 \name{Array}
 \alias{Array}
 \title{Class: Array}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007b0cb70> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007b1a020> 
  - attr(*, "name")= chr "Array_generator"
 }}
 \usage{
@@ -60,6 +60,17 @@ try(inst$add(list(b = 2), dups = FALSE, strict = 2))
 inst$.array
 
 inst$add(list(b = 2))
+inst$.array
+
+## Single atomic //
+inst <- Array$new()
+inst$add(1)
+inst$.array
+inst$add(new.env())
+inst$.array
+inst$add(a = new.env())
+inst$.array
+inst$add(b = 1)
 inst$.array
 
 ## Multiple //

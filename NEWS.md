@@ -1,3 +1,20 @@
+# CHANGES IN arrayr VERSION 0.1.3
+
+## NEW FEATURES
+
+## BUG FIXES
+
+- fixed: #3
+  inconsistency for atomic input in `add()`
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.2
 
 ## NEW FEATURES

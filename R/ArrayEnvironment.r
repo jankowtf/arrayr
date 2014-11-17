@@ -31,6 +31,9 @@ ArrayEnvironment <- R6Class(
       }
     },
     .set = function(value) {
+      if (inherits(value, "environment")) {
+        value <- list(value)
+      }
       sapply(seq(along = value), function(ii) {
         name <- names(value[ii])
         value <- value[[ii]]
@@ -42,18 +45,22 @@ ArrayEnvironment <- R6Class(
           } else {
             "1"
           }
-        }
+        }      
         assign(name, value, envir = self$.array)  
         TRUE
       })
     },
     add = function(..., id = character(), must_exist = FALSE, dups = TRUE, strict = 0) {      
       id <- as.character(id)
-      value <- list(...)
+      value <- list(...)    
       if (!length(id)) {
         nms <- ls(self$.array, all.names = TRUE)
-        out <- unlist(lapply(value, function(ii) {
-          value <- ii
+        out <- unlist(lapply(seq(along = value), function(ii) {
+          name <- names(value[ii])
+          value <- value[[ii]]
+          if (!is.null(name)) {
+            value <- structure(list(value), names = name)
+          }
           has_non <- must_exist && !all(idx_non <- names(value) %in% nms)
           has_dups <- !dups && any(idx_dups <- names(value) %in% nms)
           out <- if (has_non || has_dups) {      
@@ -89,7 +96,11 @@ ArrayEnvironment <- R6Class(
             }
           } else {
             self$.set(value)
-            structure(rep(TRUE, length(value)), names = names(value)) 
+            if (inherits(value, "environment")) {
+              structure(rep(TRUE, 1), names = names(value))
+            } else {
+              structure(rep(TRUE, length(value)), names = names(value))
+            }
           }
           out
         }))

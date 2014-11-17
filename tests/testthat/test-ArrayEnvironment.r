@@ -93,6 +93,21 @@ test_that("ArrayEnvironment/add/single/unnamed", {
   expect_true(inst$add(list("1" = 3)))
   expect_identical(as.list(inst$.array), list("1" = 3, "2" = 2, "3" = 2))
   
+  ## Atomic //
+  expect_is(inst <- ArrayEnvironment$new(), "ArrayEnvironment")
+  expect_true(inst$add(1))
+  expect_identical(as.list(inst$.array), list("1" = 1))
+  expect_is(inst <- ArrayEnvironment$new(), "ArrayEnvironment")
+  expect_true(inst$add(new.env()))
+  expect_is(res <- as.list(inst$.array), "list")
+  expect_is(res[[1]], "environment")
+  expect_true(inst$add(a = new.env()))
+  expect_is(res <- as.list(inst$.array), "list")
+  expect_is(res$a, "environment")
+  expect_true(inst$add(b = 1))
+  expect_is(res <- as.list(inst$.array), "list")
+  expect_identical(res$b, 1)
+  
 })
 
 test_that("ArrayEnvironment/add/multiple", {
