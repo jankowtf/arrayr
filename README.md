@@ -41,6 +41,15 @@ inst <- Array$new(list(c = 1), list(d = 2))
 inst$.array
 ```
 
+#### Atomic and mixed 
+
+```
+inst <- Array$new(a = 1, b = 2)
+inst$.array
+inst <- Array$new(a = 1, list(b = 2))
+inst$.array
+```
+
 ### Add 
 
 #### Single
@@ -84,7 +93,7 @@ try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
 
 ### Set 
 
-## Single
+#### Single
 
 ```
 inst <- Array$new(list(a = 1))
@@ -306,6 +315,6 @@ inst$copy(c("a", "b"), "d")
 try(inst$copy(c("a", "b"), "d", strict = 1))
 try(inst$copy(c("a", "b"), "d", strict = 2))
 ```
-## Class `Array Environment` (environment based)
+## Class `ArrayEnvironment` (environment based)
 
 See examples via `?ArrayEnvironment`.

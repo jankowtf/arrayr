@@ -3,7 +3,7 @@
 \name{Array}
 \alias{Array}
 \title{Class: Array}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007afcb88> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007afd5b8> 
  - attr(*, "name")= chr "Array_generator"
 }}
 \usage{
@@ -33,6 +33,12 @@ inst$.array
 inst <- Array$new(list(a = 1, b = 2))
 inst$.array
 inst <- Array$new(list(c = 1), list(d = 2))
+inst$.array
+
+## Atomic and mixed //
+inst <- Array$new(a = 1, b = 2)
+inst$.array
+inst <- Array$new(a = 1, list(b = 2))
 inst$.array
 
 ##------------------------------------------------------------------------------

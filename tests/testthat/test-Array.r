@@ -16,6 +16,14 @@ test_that("Array/initialize/explicit", {
   expect_is(inst <- Array$new(list(a = 1), list(b = 2)), "Array")
   expect_identical(inst$.array, list(a = 1, b = 2))
   
+  ## Atomic //
+  expect_is(inst <- Array$new(a = 1, b = 2), "Array")
+  expect_identical(inst$.array, list(a = 1, b = 2))
+  expect_is(inst <- Array$new(a = 1, list(b = 2)), "Array")
+  expect_identical(inst$.array, list(a = 1, list(b = 2)))
+  expect_is(inst <- Array$new(list(a = 1), list(b = 2)), "Array")
+  expect_identical(inst$.array, list(a = 1, b = 2))
+  
 })
 
 ##------------------------------------------------------------------------------
@@ -117,7 +125,7 @@ context("Array/get")
 
 test_that("Array/get", {  
 
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1)), "Array")
   expect_equal(inst$.array, list(a = 1, b = 1))
   expect_equal(inst$get(), list(a = 1, b = 1))
   
@@ -151,7 +159,7 @@ context("Array/exists")
 
 test_that("Array/exists", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1)), "Array")
   expect_true(inst$exists("a"))
   expect_true(all(inst$exists(c("a", "b"))))
   expect_false(inst$exists("c"))
@@ -164,7 +172,7 @@ context("Array/index")
 
 test_that("Array/index", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1)), "Array")
   expect_identical(inst$index("a"), structure(1, names = "a"))
   expect_identical(inst$index(c("a", "b")), 
     structure(as.numeric(1:2), names = c("a", "b")))
@@ -189,7 +197,7 @@ context("Array/clear")
 
 test_that("Array/clear", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1)), "Array")
   expect_true(inst$clear())
   expect_identical(inst$.array, structure(list(), names = character()))
   
@@ -201,7 +209,7 @@ context("Array/remove")
 
 test_that("Array/remove", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_true(inst$rm("a"))
   expect_false(inst$exists("a"))
   expect_true(all(inst$rm(c("b", "c"))))
@@ -221,22 +229,22 @@ context("Array/remove first")
 
 test_that("Array/remove first", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_true(inst$rmFirst())
   expect_identical(inst$.array, list(b = 1, c = 1))
   expect_true(all(inst$rmFirst(2)))
   expect_identical(inst$.array, structure(list(), names = character()))
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_identical(inst$rmFirst(4), structure(c(rep(TRUE, 3), FALSE), names = 1:4))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_warning(expect_identical(inst$rmFirst(4, strict = 1), 
     structure(c(rep(TRUE, 3), FALSE), names = 1:4)))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_error(inst$rmFirst(4, strict = 2))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_false(inst$rmFirst(4, simplify = TRUE))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_true(inst$rmFirst(3, simplify = TRUE))
   expect_identical(inst$.array, structure(list(), names = character()))
   
@@ -251,29 +259,29 @@ context("Array/remove last")
 
 test_that("Array/remove last", {  
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_identical(inst$rmLast(), c("3" = TRUE))
   expect_identical(inst$.array, list(a = 1, b = 1))
   expect_identical(inst$rmLast(2), c("2" = TRUE, "1" = TRUE))
   expect_identical(inst$.array, structure(list(), names = character()))
   
   ## Simplify //
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_true(inst$rmLast(simplify = TRUE))
   expect_true(inst$rmLast(2, simplify = TRUE))
   
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_identical(inst$rmLast(4), 
     structure(c(rep(TRUE, 3), FALSE), names = 3:0))
   expect_identical(inst$.array, structure(list(), names = character()))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_warning(expect_identical(inst$rmLast(4, strict = 1), 
     structure(c(rep(TRUE, 3), FALSE), names = 3:0)))
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_error(inst$rmLast(4, strict = 2))
   
   ## Simplify //
-  expect_is(inst <- Array$new(array = list(a = 1, b = 1, c = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1, b = 1, c = 1)), "Array")
   expect_false(inst$rmLast(4, simplify = TRUE))
   expect_identical(inst$.array, structure(list(), names = character()))
   
@@ -301,7 +309,7 @@ context("Array/copy")
 
 test_that("Array/copy", { 
   
-  expect_is(inst <- Array$new(array = list(a = 1)), "Array")
+  expect_is(inst <- Array$new(list(a = 1)), "Array")
   expect_true(inst$copy("a", "b"))
   expect_identical(inst$.array, list(a = 1, b = 1))
   
