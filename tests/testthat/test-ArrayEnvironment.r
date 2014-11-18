@@ -185,6 +185,7 @@ context("ArrayEnvironment/get")
 
 test_that("ArrayEnvironment/get", {  
 
+  skip("manual only")
   expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1)), 
     "ArrayEnvironment")
   expect_equal(as.list(inst$.array), list(a = 1, b = 1))
@@ -217,10 +218,10 @@ test_that("ArrayEnvironment/get", {
 
 test_that("ArrayEnvironment/get/order", {  
 
-  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+#   skip("manual only")
+  expect_is(inst <<- ArrayEnvironment$new(list(a = 1, b = 1, 
     "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)), 
     "ArrayEnvironment")
-
   expect_equal(as.list(inst$.array, all.names = TRUE), 
     list("20" = 1, a = 1, b = 1, "10" = 1, "1" = 1, .a = 1, "2" = 1))
   expect_equal(as.list(inst$get(), all.names = TRUE), 
@@ -229,6 +230,19 @@ test_that("ArrayEnvironment/get/order", {
     list("1" = 1, "2" = 1, "10" = 1, "20" = 1, .a = 1, a = 1, b = 1))
   expect_equal(inst$get(list = TRUE, all_names = TRUE, sorted = FALSE), 
     list(.a = 1, "1" = 1, "10" = 1, "2" = 1, "20" = 1, a = 1, b = 1))
+  
+})
+
+test_that("ArrayEnvironment/get/numeric index", {  
+
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+    "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)), 
+    "ArrayEnvironment")
+
+  expect_equal(inst$get(1:5), 
+    list("1" = 1, "2" = 1, "10" = 1, "20" = 1, a = 1))
+  expect_equal(inst$get(1:3, char = TRUE), 
+    list("1" = 1, "2" = 1, "3" = NULL))
   
 })
 

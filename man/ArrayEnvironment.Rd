@@ -3,7 +3,7 @@
 \name{ArrayEnvironment}
 \alias{ArrayEnvironment}
 \title{Class: ArrayEnvironment}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007ee9fb0> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007f02110> 
  - attr(*, "name")= chr "ArrayEnvironment_generator"
 }}
 \usage{

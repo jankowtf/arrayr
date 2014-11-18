@@ -1,3 +1,19 @@
+# CHANGES IN arrayr VERSION 0.1.5
+
+## NEW FEATURES
+
+- numeric indexes for `ArrayEnvironment()` in `get()`
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.4
 
 ## NEW FEATURES
