@@ -272,9 +272,21 @@ ArrayEnvironment <- R6Class(
         exists(ii, envir = self$.array, inherits = FALSE)
       })
     },
-    get = function(id = character(), all_names = FALSE, list = FALSE, 
+    get = function(id = character(), char = FALSE, all_names = FALSE, list = FALSE, 
       default = NULL, inner = TRUE, simplify = TRUE, sorted = TRUE, strict = 0) {
-      id <- as.character(id)
+      if (inherits(id, c("numeric", "integer")) && !char) {
+        nms <- if (sorted) {
+          self$.order(all_names = all_names)
+        } else {
+          ls(self$.array, all.names = all_names)
+        }
+        id <- nms[id]
+        if (length(id)) {
+          id <- if (any(is.na(id))) idx[-which(is.na(id))] else id
+        }
+      } else {
+        id <- as.character(id)  
+      }
       out <- if (strict > 0 && !all(idx <- id %in% ls(self$.array, all.names = TRUE))) {
         if (strict == 0) {
           TRUE
