@@ -1,3 +1,8 @@
+# Version 0.1.4
+ - fixes #3
+
+----------
+
 # Version 0.1.3
  - fixed #2
 
