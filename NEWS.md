@@ -1,3 +1,24 @@
+# CHANGES IN arrayr VERSION 0.1.4
+
+## NEW FEATURES
+
+- argument `sorted`
+  - currently only for `ArrayEnvironment`
+  - currently affects: `get()`, `rm()`
+- argument `all_names`
+  - currently only for `ArrayEnvironment`
+  - currently affects: `get()`, `rm()`
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.3
 
 ## NEW FEATURES

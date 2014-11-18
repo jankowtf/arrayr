@@ -189,7 +189,7 @@ test_that("ArrayEnvironment/get", {
     "ArrayEnvironment")
   expect_equal(as.list(inst$.array), list(a = 1, b = 1))
   expect_equal(as.list(inst$get()), list(a = 1, b = 1))
-  expect_equal(inst$get(as_list = TRUE), list(a = 1, b = 1))
+  expect_equal(inst$get(list = TRUE), list(a = 1, b = 1))
   
   expect_identical(inst$get("a"), 1)
   expect_identical(inst$get("a", inner = FALSE), list(a = 1))
@@ -212,6 +212,23 @@ test_that("ArrayEnvironment/get", {
   expect_identical(inst$get(c("a", "b")), list(a = 1, b = NULL))
   expect_warning(expect_identical(inst$get(c("a", "b"), strict = 1), list(a = 1, b = NULL)))
   expect_error(inst$get(c("a", "b"), strict = 2))
+  
+})
+
+test_that("ArrayEnvironment/get/order", {  
+
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+    "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)), 
+    "ArrayEnvironment")
+
+  expect_equal(as.list(inst$.array, all.names = TRUE), 
+    list("20" = 1, a = 1, b = 1, "10" = 1, "1" = 1, .a = 1, "2" = 1))
+  expect_equal(as.list(inst$get(), all.names = TRUE), 
+    list("20" = 1, a = 1, b = 1, "10" = 1, "1" = 1, .a = 1, "2" = 1))
+  expect_equal(inst$get(list = TRUE), 
+    list("1" = 1, "2" = 1, "10" = 1, "20" = 1, .a = 1, a = 1, b = 1))
+  expect_equal(inst$get(list = TRUE, all_names = TRUE, sorted = FALSE), 
+    list(.a = 1, "1" = 1, "10" = 1, "2" = 1, "20" = 1, a = 1, b = 1))
   
 })
 
@@ -284,6 +301,26 @@ test_that("ArrayEnvironment/remove", {
   expect_false(inst$rm("a"))
   expect_warning(expect_false(inst$rm("a", strict = 1)))
   expect_error(inst$rm("a", strict = 2))
+  
+})
+
+test_that("ArrayEnvironment/remove/index", {  
+  
+  ## Sorted //
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+    "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)), 
+    "ArrayEnvironment")
+  inst$get(list = TRUE)
+  expect_true(all(inst$rm(id = 1:2)))
+  inst$get(list = TRUE)
+  
+  ## Unsorted //
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+    "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)), 
+    "ArrayEnvironment")
+  inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
+  expect_true(all(inst$rm(id = 1:2, sorted = FALSE, all_names = TRUE)))
+  inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
   
 })
 
