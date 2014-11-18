@@ -3,7 +3,7 @@
 \name{ArrayEnvironment}
 \alias{ArrayEnvironment}
 \title{Class: ArrayEnvironment}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007ee14d0> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007ee9fb0> 
  - attr(*, "name")= chr "ArrayEnvironment_generator"
 }}
 \usage{
@@ -166,6 +166,15 @@ inst$get(c("a", "b"))
 try(inst$get(c("a", "b"), strict = 1))
 try(inst$get(c("a", "b"), strict = 2))
 
+## Order //
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
+
+as.list(inst$.array, all.names = TRUE)
+as.list(inst$get(), all.names = TRUE)
+inst$get(list = TRUE)
+inst$get(list = TRUE, all_names = TRUE, sorted = FALSE)
+  
 ##------------------------------------------------------------------------------
 ## Exists //
 ##------------------------------------------------------------------------------
@@ -216,6 +225,22 @@ inst$rm(c("a", "b"))
 inst$rm("a")
 try(inst$rm("a", strict = 1))
 try(inst$rm("a", strict = 2))
+
+## Numerical index //
+## Sorted:
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
+inst$get(list = TRUE)
+inst$rm(id = 1:2)
+inst$get(list = TRUE)
+## --> first two elements of **ordered** array have been removed
+
+## Unsorted:
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
+  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
+inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
+inst$rm(id = 1:3, sorted = FALSE, all_names = TRUE)
+inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
 
 ##------------------------------------------------------------------------------
 ## Remove first //
