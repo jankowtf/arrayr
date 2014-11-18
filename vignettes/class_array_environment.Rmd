@@ -1,15 +1,25 @@
-\dontrun{
+---
+title: "ArrayEnvironment"
+author: "Janko Thyson"
+date: "Tuesday, November 18, 2014"
+output: 
+  html_document:
+    self_contained: no
+---
 
-##------------------------------------------------------------------------------
-## Initialize
-##------------------------------------------------------------------------------
+## Initialize 
 
-## Default //
+### Default
+
+```
 inst <- ArrayEnvironment$new()
 inst$get()
 inst$get(list = TRUE)
+```
 
-## List/named //
+### List/named
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 2))
 inst$get(list = TRUE)
 
@@ -21,8 +31,11 @@ inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(list(a = 1, b = new.env()))
 inst$get(list = TRUE)
+```
 
-## List/unnamed //
+### List/unnamed
+
+```
 inst <- ArrayEnvironment$new(list(1, 2))
 inst$get(list = TRUE)
 
@@ -31,8 +44,11 @@ inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(list(1, new.env()))
 inst$get(list = TRUE)
+```
 
-## List/mixed //
+### List/mixed
+
+```
 inst <- ArrayEnvironment$new(list(1), list(a = 2))
 inst$get(list = TRUE)
 
@@ -47,8 +63,11 @@ inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(list(list(1, 2, a = 3)))
 inst$get(list = TRUE)
+```
 
-## Explicit/atomic/named //
+### Explicit/atomic/named 
+
+```
 inst <- ArrayEnvironment$new(a = 1, b = 2)
 inst$get(list = TRUE)
 
@@ -57,30 +76,35 @@ inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(a = 1, b = list(a = 1, b = 2))
 inst$get(list = TRUE)
+```
 
-## Explicit/atomic/unnamed //
+### Explicit/atomic/unnamed
+
+```
 inst <- ArrayEnvironment$new(1, 2)
 inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(1, new.env())
 inst$get(list = TRUE)
+```
 
-## Explicit/mixed //
+### Explicit/mixed 
+
+```
 inst <- ArrayEnvironment$new(a = 1, 2)
 inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(a = 1, list(b = 2), new.env())
 inst$get(list = TRUE)
+```
+## Add
 
-##------------------------------------------------------------------------------
-## Add //
-##------------------------------------------------------------------------------
+### NOTE
+Method `add()` is "overwrite eager"; see method `set()` for an alternative that is "overwrite hesitant".
 
-## NOTE
-## Method `add()` is "overwrite eager"; see method `set()` for an alternative
-## that is "overwrite hesitant"
+### List/single/named 
 
-## List/single/named //
+```
 inst <- ArrayEnvironment$new()
 inst$add(list(a = 1))
 inst$get(list = TRUE)
@@ -99,8 +123,11 @@ inst$get(list = TRUE)
 inst$add(list(b = 3))
 ## --> overwrite
 inst$get(list = TRUE)
+```
 
-## List/single/unnamed //
+### List/single/unnamed
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(list(1))
 inst$get(list = TRUE)
@@ -120,25 +147,37 @@ inst$get(list = TRUE)
 inst$add(list("1" = 3))
 ## --> overwrite
 inst$get(list = TRUE)
+```
 
-## List/multiple/named //
+### List/multiple/named 
+
+```
 inst <- ArrayEnvironment$new()
 all(inst$add(list(a = 1), list(b = 2))))
 inst$get(list = TRUE)
+```
 
-## List/multiple/unnamed //
+### List/multiple/unnamed
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(list(1), list(2))
 inst$get(list = TRUE)
+```
 
-## Atomic/single/named //
+### Atomic/single/named
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(a = new.env())
 inst$get(list = TRUE)
 inst$add(b = 1)
 inst$get(list = TRUE)
+```
 
-## Atomic/single/unnamed //
+### Atomic/single/unnamed
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(1)
 inst$get(list = TRUE)
@@ -148,8 +187,11 @@ inst$get(list = TRUE)
 inst <- ArrayEnvironment$new()
 inst$add(new.env())
 inst$get(list = TRUE)
+```
 
-## Atomic/single/id //
+### Atomic/single/id
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(1, id = "a")
 inst$get(list = TRUE)
@@ -162,14 +204,20 @@ inst$get(list = TRUE)
 inst$add(10, id = "b")
 inst$get(list = TRUE)
 ## --> overwrite
+```
 
-## Wrong dimensions //
+### Wrong dimensions
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(1, id = c("a", "b"))
 try(inst$add(1, id = c("a", "b"), strict = 1))
 try(inst$add(1, id = c("a", "b"), strict = 2))
+```
 
-## Atomic/multiple/named //
+### Atomic/multiple/named
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(a = 1, b = 2)
 inst$get(list = TRUE)
@@ -177,8 +225,11 @@ inst$get(list = TRUE)
 inst <- ArrayEnvironment$new()
 inst$add(a = new.env(), b = new.env())
 inst$get(list = TRUE)
+```
 
-## Atomic/multiple/unnamed //
+### Atomic/multiple/unnamed
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(1:3)
 inst$get(list = TRUE)
@@ -186,8 +237,11 @@ inst$get(list = TRUE)
 inst <- ArrayEnvironment$new()
 inst$add(envir, new.env())
 inst$get(list = TRUE)
+```
 
-## Atomic/multiple/id //
+### Atomic/multiple/id
+
+```
 inst <- ArrayEnvironment$new()
 inst$add(1, 1, 1, id = c("c", "d", "e"))
 inst$get(list = TRUE)
@@ -199,85 +253,24 @@ inst <- ArrayEnvironment$new()
 inst$add(1, 1, 1, id = c("a", "b"))
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 1))
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
+```
 
-##------------------------------------------------------------------------------
-## Set //
-##------------------------------------------------------------------------------
+## Get
 
-## List/single //
-inst <- ArrayEnvironment$new(list(a = 1))
-inst$set(list(a = 2))
-inst$get(list = TRUE)
-inst$set(list(b = 2))
-try(inst$set(list(b = 2), strict = 1))
-try(inst$set(list(b = 2), strict = 2))
-inst$get(list = TRUE)
+### All
 
-## List/multiple //
-inst <- ArrayEnvironment$new(list(a = 1, b = 1))
-inst$set(list(a = 2), list(b = 2))
-inst$get(list = TRUE)
-
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
-inst$set(2, 2, 2, id = c("a", "b", "c"))
-inst$get(list = TRUE)
-
-## List/new //
-inst <- ArrayEnvironment$new(list(a = 1))
-inst$set(list(b = 1), must_exist = FALSE)
-inst$get(list = TRUE)
-inst$set(list(c = 1, d = 1), must_exist = FALSE)
-
-## Atomic/single/named //
-inst <- ArrayEnvironment$new(a = 1)
-inst$set(a = 10)
-inst$get(list = TRUE)
-
-inst <- ArrayEnvironment$new(a = 1)
-inst$set(b = 1, must_exist = FALSE)
-inst$get(list = TRUE)
-
-## Atomic/single/unnamed //
-inst <- ArrayEnvironment$new(1)
-inst$set(10)
-inst$get(list = TRUE)
-
-## Atomic/multiple/named //
-inst <- ArrayEnvironment$new(a = 1, b = 1)
-inst$set(a = 10, b = 10)
-inst$get(list = TRUE)
-
-inst <- ArrayEnvironment$new(a = 1, b = 1)
-inst$set(a = 10, b = 10, c = 1, must_exist = FALSE)
-inst$get(list = TRUE)
-
-## Atomic/id //
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
-inst$set(2, 2, 2, id = c("a", "b", "d"))
-inst$get(list = TRUE)
-
-## Not yet existing //
-try(inst$set(2, 2, 2, id = c("a", "b", "d"), strict = 1))
-try(inst$set(2, 2, 2, id = c("a", "b", "d"), strict = 2))
-
-## Different lengths //
-inst$set(2, 2, 2, id = c("b", "c")))
-try(inst$set(2, 2, 2, id = c("b", "c"), strict = 1))
-try(inst$set(2, 2, 2, id = c("b", "c"), strict = 2))
-
-##------------------------------------------------------------------------------
-## Get //
-##------------------------------------------------------------------------------
-
-## All //
+```
 inst <- ArrayEnvironment$new()
 inst$get()
 inst$get(list = TRUE)
 
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$get(list = TRUE)
+```
 
-## Character index //
+### Character index
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$get("a")
 inst$get("a", inner = FALSE)
@@ -293,8 +286,11 @@ inst$get("c", strict = 2)
 
 inst$get(c("a", "c"))
 inst$get(c("a", "c"), inner = FALSE)
+```
 
-## Order //
+### Order
+
+```
 inst <- ArrayEnvironment$new(
   list(a = 1, b = 1, "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)
 )
@@ -309,9 +305,13 @@ inst$get(list = TRUE, all_names = TRUE, sorted = FALSE)
 ## the default of `sorted` is `TRUE`
 inst$get(list = TRUE)
 ## --> numbers before characters, hidden before non-hidden
+```
 
-## Numerical index //
-## Numerical indexes are treated as **position** indexes unless `char = TRUE`
+### Numerical index 
+
+Numerical indexes are treated as **position** indexes unless `char = TRUE`
+
+```
 inst <- ArrayEnvironment$new(
   list(a = 1, b = 1, "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1)
 )
@@ -321,20 +321,25 @@ inst$get(1:2, char = TRUE)
 ## --> elements with character names `"1"` and `"2"`
 inst$get(1:3, char = TRUE)
 ## --> no element with character name `"3"`
+```
 
-##------------------------------------------------------------------------------
-## Exists //
-##------------------------------------------------------------------------------
+## Exists 
 
-## Character index //
+### Character index 
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$exists("a")
 inst$exists(c("a", "b"))
 inst$exists("a", "b")
 inst$exists("c")
+```
 
-## Numeric index //
-## Interpreted as position index
+### Numeric index
+
+Interpreted as position index
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$exists(1)
 inst$exists(c(1, 2))
@@ -343,11 +348,11 @@ inst$exists(3)
 
 inst <- ArrayEnvironment$new(list("1" = 1, b = 1))
 inst$exists(1, 2, char = TRUE)
+```
 
-##------------------------------------------------------------------------------
-## Index //
-##------------------------------------------------------------------------------
+## Index
 
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, "1" = 1))
 inst$index("a")
 inst$index(c("a", "b"))
@@ -356,25 +361,31 @@ inst$index("c")
 try(inst$index("c", strict = 1))
 try(inst$index("c", strict = 2))
 inst$index(c("a", "c"))
+```
 
+Simplify 
+
+```
 inst$index("c", simplify = TRUE)
 try(inst$index("c", simplify = TRUE, strict = 1))
 try(inst$index("c", simplify = TRUE, strict = 2))
 inst$index(c("a", "c"), simplify = TRUE)
+```
 
-##------------------------------------------------------------------------------
-## Clear //
-##------------------------------------------------------------------------------
+## Clear 
 
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$get(list = TRUE)
 inst$clear()
 inst$get(list = TRUE)
+```
 
-##------------------------------------------------------------------------------
-## Remove //
-##------------------------------------------------------------------------------
+## Remove
 
+### Character 
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
 inst$rm("a")
 inst$exists("a")
@@ -386,27 +397,34 @@ inst$rm(c("a", "b"))
 inst$rm("a")
 try(inst$rm("a", strict = 1))
 try(inst$rm("a", strict = 2))
+```
 
-## Numerical index //
-## Sorted:
+### Numerical index
+
+Sorted:
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
   "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
 inst$get(list = TRUE)
 inst$rm(id = 1:2)
 inst$get(list = TRUE)
 ## --> first two elements of **ordered** array have been removed
+```
 
-## Unsorted:
+Unsorted:
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
   "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
 inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
 inst$rm(id = 1:3, sorted = FALSE, all_names = TRUE)
 inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
+```
 
-##------------------------------------------------------------------------------
-## Remove first //
-##------------------------------------------------------------------------------
+### Remove first
 
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
 inst$rmFirst()
 inst$get(list = TRUE)
@@ -428,11 +446,11 @@ inst$get(list = TRUE)
 
 inst$rmFirst()
 inst$get(list = TRUE)
+```  
   
-##------------------------------------------------------------------------------
-## Remove last //
-##------------------------------------------------------------------------------
+### Remove last 
 
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
 inst$rmLast()
 inst$get(list = TRUE)
@@ -474,12 +492,11 @@ inst$rmLast(simplify = TRUE)
 try(inst$rmLast(strict = 1, simplify = TRUE))
 inst$rmLast(2, simplify = TRUE)
 try(inst$rmLast(strict = 1, simplify = TRUE))
+```
 
-##------------------------------------------------------------------------------
-## Copy //
-##------------------------------------------------------------------------------
+## Copy
 
-## Single/character //
+```
 inst <- ArrayEnvironment$new(list(a = 1))
 inst$copy("a", "b")
 inst$get(list = TRUE)
@@ -489,7 +506,39 @@ inst$get(list = TRUE)
 try(inst$copy("c", "d", strict = 1))
 try(inst$copy("c", "d", strict = 2))
 
-## Single/numeric //
+## Multiple //
+inst$copy(c("a", "b"), c("c", "d"))
+inst$get(list = TRUE)
+inst$copy(c("a", "b"), c("c", "d"), dups = FALSE)
+inst$get(list = TRUE)
+try(inst$copy(c("a", "b"), c("c", "d"), dups = FALSE, strict = 1))
+try(inst$copy(c("a", "b"), c("c", "d"), dups = FALSE, strict = 2))
+inst$copy(c("a", "b"), c("c", "d"))
+inst$get(list = TRUE)
+
+inst$copy(c("a", "b"), "d")
+try(inst$copy(c("a", "b"), "d", strict = 1))
+try(inst$copy(c("a", "b"), "d", strict = 2))
+```
+
+## Copy 
+
+### Single/character
+
+```
+inst <- ArrayEnvironment$new(list(a = 1))
+inst$copy("a", "b")
+inst$get(list = TRUE)
+
+inst$copy("c", "d")
+inst$get(list = TRUE)
+try(inst$copy("c", "d", strict = 1))
+try(inst$copy("c", "d", strict = 2))
+```
+
+### Single/numeric
+
+```
 inst <- ArrayEnvironment$new(list(a = 1))
 inst$copy(1, 2)
 inst$get(list = TRUE)
@@ -498,8 +547,11 @@ inst$copy(3, 4)
 inst$get(list = TRUE)
 try(inst$copy(3, 4, strict = 1))
 try(inst$copy(3, 4, strict = 2))
+```
 
-## Multiple/character //
+### Multiple/character
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$copy(c("a", "b"), c("c", "d"))
 inst$get(list = TRUE)
@@ -513,8 +565,11 @@ inst$get(list = TRUE)
 all(inst$copy(c("a", "b"), "d")))  
 try(inst$copy(c("a", "b"), "d", strict = 1))
 try(inst$copy(c("a", "b"), "d", strict = 2))
+```
 
-## Multiple/numeric //
+### Multiple/numeric
+
+```
 inst <- ArrayEnvironment$new(list(a = 1, b = 1))
 inst$copy(c(1, 2), c(3, 4))
 inst$get(list = TRUE)
@@ -528,5 +583,4 @@ inst$get(list = TRUE)
 inst$copy(c(1, 2), 4)
 try(inst$copy(c(1, 2), 4, strict = 1))
 try(inst$copy(c(1, 2), 4, strict = 2))
-  
-}
+```

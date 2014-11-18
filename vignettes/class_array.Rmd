@@ -1,0 +1,10 @@
+---
+title: "Class Array"
+author: "Janko Thyson"
+date: "Tuesday, November 18, 2014"
+output: 
+  html_document:
+    self_contained: no
+---
+
+To be added

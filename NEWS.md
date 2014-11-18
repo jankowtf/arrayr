@@ -1,3 +1,40 @@
+# CHANGES IN arrayr VERSION 0.1.6
+
+## NEW FEATURES
+
+- argument `intnum` in `.set()` of `ArrayEnvironment`:
+  Converts `integer` to `numeric` values to ensure numerical consistency
+- `ArrayEnvironment$exists()` can handle `character` and `numeric` indexes;
+  the latter is interpreted as a position index
+- argument `char` in `ArrayEnvironment$exists()`
+  Coerces `numeric` index to `character` index
+- argument `all_names` in `ArrayEnvironment$index()`
+  Controls if hidden elements should also be considered or not
+- arguments `all_names`, `char`, `sorted` in `ArrayEnvironment$copy()`
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+- M: argument `id` in `ArrayEnvironment$get()` substituted by `...`
+  Allows the specification via `c()` or `<1>, <2>, ..., <n>`
+- M: argument `id` in `ArrayEnvironment$exists()` substituted by `...`
+  Allows the specification via `c()` or `<1>, <2>, ..., <n>`
+- M: argument `id` in `ArrayEnvironment$index()` substituted by `...`
+  Allows the specification via `c()` or `<1>, <2>, ..., <n>`  
+- M: numerical indexes possible in `ArrayEnvironment$copy()`
+
+## MINOR CHANGES
+
+- M: return value of `add()` when `overwrite = FALSE` in `ArrayEnvironment`:
+  names are now included
+- M: return value of `.set()`:
+  names are now included
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.5
 
 ## NEW FEATURES

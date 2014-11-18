@@ -3,7 +3,7 @@
 \name{Array}
 \alias{Array}
 \title{Class: Array}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007b42340> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x0000000007b321f8> 
  - attr(*, "name")= chr "Array_generator"
 }}
 \usage{
