@@ -1,0 +1,12 @@
+# CHANGES IN arrayr from VERSION 0.1.5 to VERSION 0.1.6
+
+## NEW FEATURES
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+

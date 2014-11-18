@@ -17,8 +17,144 @@ The package provides classes and methods for managing array structures.
 
 ## Vignettes
 
-None so far
+- [Class `Array`](https://github.com/Rappster/arrayr/blob/master/vignettes/class_array.Rmd)
+- [Class `ArrayEnvironment`](https://github.com/Rappster/arrayr/blob/master/vignettes/class_array_environment.Rmd)
 
+----------
+
+## Class `ArrayEnvironment` (environment based)
+
+### Initialize
+
+```
+inst <- ArrayEnvironment$new(a = 1, b = 1)
+inst$get(list = TRUE)
+```
+
+### Add 
+
+```
+inst$add(c = 1, d = 1)
+inst$get(list = TRUE)
+inst$add(new.env())
+inst$get(list = TRUE)
+```
+
+## Set
+
+```
+inst$set(a = 10)
+inst$get(list = TRUE)
+inst$set(e = 1)
+inst$get(list = TRUE)
+inst$set(e = 1, must_exist = FALSE)
+inst$get(list = TRUE)
+```
+
+## Get
+
+```
+inst$get("a")
+inst$get("a", "b")
+inst$get(1, 4)
+```
+
+## Exists
+
+```
+inst$exists("a")
+inst$exists("a", "b")
+inst$exists(1, 4)
+```
+
+## Index
+
+```
+inst$index("a")
+inst$index("a", "b")
+inst$index("1")
+inst$index(1, 2)
+```
+
+## Clear 
+
+```
+inst$clear()
+inst$get(list = TRUE)
+```
+
+## Remove 
+
+```
+inst <- ArrayEnvironment$new(list(1, a = 1, b = 1))
+inst$get(list = TRUE)
+inst$rm("a")
+inst$exists("a")
+inst$rm(c("b", "c"))
+inst$rm(1)
+inst$get(list = TRUE)
+inst$rm("a")
+try(inst$rm("a", strict = 1))
+try(inst$rm("a", strict = 2))
+```
+
+## Remove first 
+
+```
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rmFirst()
+inst$get(list = TRUE)
+inst$rmFirst(2)
+inst$get(list = TRUE)
+```
+
+## Remove last
+
+```
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rmLast()
+inst$get(list = TRUE)
+inst$rmLast(2)
+inst$get(list = TRUE)
+```
+
+## Copy
+
+### Single/character
+
+```
+inst <- ArrayEnvironment$new(list(a = 1))
+inst$copy("a", "b")
+inst$get(list = TRUE)
+
+inst$copy("c", "d")
+inst$get(list = TRUE)
+try(inst$copy("c", "d", strict = 1))
+try(inst$copy("c", "d", strict = 2))
+```
+
+### Single/numeric
+
+```
+inst <- ArrayEnvironment$new(list(a = 1))
+inst$copy(1, 2)
+inst$get(list = TRUE)
+
+inst$copy(3, 4)
+inst$get(list = TRUE)
+try(inst$copy(3, 4, strict = 1))
+try(inst$copy(3, 4, strict = 2))
+```
+
+### Multiple/character
+
+```
+inst <- ArrayEnvironment$new(list(a = 1, b = 1))
+inst$copy(c("a", "b"), c("c", "d"))
+inst$get(list = TRUE)
+inst$copy(c("a", "b"), c("c", "d"))
+inst$get(list = TRUE)
+```
 ----------
 
 ## Class `Array` (list based)
@@ -328,79 +464,4 @@ inst$get()
 inst$copy(c("a", "b"), "d")
 try(inst$copy(c("a", "b"), "d", strict = 1))
 try(inst$copy(c("a", "b"), "d", strict = 2))
-```
-------
-
-## Class `ArrayEnvironment` (environment based)
-
-See examples via `?ArrayEnvironment`.
-
-### Get 
-
-```
-inst <- ArrayEnvironment$new()
-inst$get()
-inst$get(as_list = TRUE)
-
-inst <- ArrayEnvironment$new(list(a = 1, b = 1))
-inst$get()
-inst$get(as_list = TRUE)
-
-inst$get("a")
-inst$get("a", inner = FALSE)
-inst$get(c("a", "b"))
-inst$get(c("a", "b"), inner = FALSE)
-inst$get("c")
-inst$get("c", inner = FALSE)
-inst$get(c("a", "c"))
-inst$get(c("a", "c"), inner = FALSE)
-
-inst <- ArrayEnvironment$new(list(a = 1))
-inst$get("b")
-try(inst$get("b", strict = 1))
-try(inst$get("b", strict = 2))
-inst$get(c("a", "b"))
-try(inst$get(c("a", "b"), strict = 1))
-try(inst$get(c("a", "b"), strict = 2))
-
-## Order //
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
-  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
-
-as.list(inst$.array, all.names = TRUE)
-as.list(inst$get(), all.names = TRUE)
-inst$get(list = TRUE)
-inst$get(list = TRUE, all_names = TRUE, sorted = FALSE)
-```
-
-### Remove 
-
-```
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
-inst$rm("a")
-inst$exists("a")
-inst$rm(c("b", "c"))
-inst$rm("a")
-inst$rm(c("a", "b"))
-inst$add(list(a = 1))
-inst$rm(c("a", "b"))
-inst$rm("a")
-try(inst$rm("a", strict = 1))
-try(inst$rm("a", strict = 2))
-
-## Numerical index //
-## Sorted:
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
-  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
-inst$get(list = TRUE)
-inst$rm(id = 1:2)
-inst$get(list = TRUE)
-## --> first two elements of **ordered** array have been removed
-
-## Unsorted:
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
-  "1" = 1, "10" = 1, "2" = 1, "20" = 1, .a = 1))
-inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
-inst$rm(id = 1:3, sorted = FALSE, all_names = TRUE)
-inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
 ```

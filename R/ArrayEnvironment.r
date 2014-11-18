@@ -30,7 +30,7 @@ ArrayEnvironment <- R6Class(
         self$.set(value)
       }
     },
-    .set = function(value) {
+    .set = function(value, intnum = TRUE) {
       if (inherits(value, "environment")) {
         value <- list(value)
       }
@@ -46,11 +46,16 @@ ArrayEnvironment <- R6Class(
             "1"
           }
         }      
+        if (inherits(value, "integer") && intnum) {
+          value <- as.numeric(value)
+        }
         assign(name, value, envir = self$.array)  
-        TRUE
+        structure(TRUE, names = name)
       })
     },
-    add = function(..., id = character(), must_exist = FALSE, dups = TRUE, strict = 0) {      
+    add = function(..., id = character(), must_exist = FALSE, 
+      overwrite = TRUE, strict = 0) {      
+      
       id <- as.character(id)
       value <- list(...)    
       if (!length(id)) {
@@ -62,22 +67,22 @@ ArrayEnvironment <- R6Class(
             value <- structure(list(value), names = name)
           }
           has_non <- must_exist && !all(idx_non <- names(value) %in% nms)
-          has_dups <- !dups && any(idx_dups <- names(value) %in% nms)
-          out <- if (has_non || has_dups) {      
+          has_existing <- !overwrite && any(idx_dups <- names(value) %in% nms)
+          out <- if (has_non || has_existing) {      
             if (has_non) {
               msg <- c(
                 Reason = "no such element",
                 IDs = names(value)[which(!idx_non)]
               )
             }
-            if (has_dups) {
+            if (has_existing) {
               msg <- c(
-                Reason = "duplicates",
+                Reason = "element already exists",
                 IDs = names(value)[which(idx_dups)]
               )
             }
-            if (strict == 0) {
-              FALSE
+            if (strict == 0) { 
+              structure(FALSE, names = names(value))
             } else if (strict == 1) {
               conditionr::signalCondition(
                 condition = "Invalid",
@@ -85,7 +90,7 @@ ArrayEnvironment <- R6Class(
                 ns = "ArrayEnvironment",
                 type = "warning"
               )  
-              FALSE
+              structure(FALSE, names = names(value))
             } else if (strict == 2) {
               conditionr::signalCondition(
                 condition = "Invalid",
@@ -96,11 +101,11 @@ ArrayEnvironment <- R6Class(
             }
           } else {
             self$.set(value)
-            if (inherits(value, "environment")) {
-              structure(rep(TRUE, 1), names = names(value))
-            } else {
-              structure(rep(TRUE, length(value)), names = names(value))
-            }
+#             if (inherits(value, "environment")) {
+#               structure(rep(TRUE, 1), names = names(value))
+#             } else {         
+#               structure(rep(TRUE, length(value)), names = names(value))
+#             }
           }
           out
         }))
@@ -142,17 +147,17 @@ ArrayEnvironment <- R6Class(
             names(value) <- id[[ii]]
             
             has_non <- must_exist && !all(idx_non <- id[[ii]] %in% nms)
-            has_dups <- !dups && any(idx_dups <- id[[ii]] %in% nms)
-            if (has_dups || has_non) {
+            has_existing <- !overwrite && any(idx_dups <- id[[ii]] %in% nms)
+            if (has_existing || has_non) {
               if (has_non) {
                 msg <- c(
                   Reason = "no such element",
                   IDs = id[[ii]][which(!idx_non)]
                 )
               }
-              if (has_dups) {
+              if (has_existing) {
                 msg <- c(
-                  Reason = "duplicates",
+                  Reason = "element already exists",
                   IDs = id[[ii]][which(idx_dups)]
                 )
               }
@@ -184,12 +189,31 @@ ArrayEnvironment <- R6Class(
       }
       out
     },
-    copy = function(from, to, dups = TRUE, strict = 0) {
-      from <- as.character(from)
-      to <- as.character(to)
+    copy = function(from, to, all_names = FALSE, char = FALSE, 
+      overwrite = FALSE, sorted = FALSE, strict = 0) {
+      
+#       from <- as.character(from)
+      from <- if (inherits(from, c("numeric", "integer")) && !char) {
+        from
+      } else {
+        as.character(from)  
+      }
+#       to <- as.character(to)
+      to <- if (inherits(to, c("numeric", "integer")) && !char) {
+        to
+      } else {
+        as.character(to)  
+      }
+      
       length_diff <- length(from) != length(to) 
-      has_dups <- !dups && any(idx_dups <- to %in% ls(self$.array, all.names = TRUE))
-      out <- if (length_diff || has_dups) {
+      nms <- if (sorted) {
+        self$.order(all_names = all_names)
+      } else {
+        ls(self$.array, all.names = all_names)
+      }
+      has_existing <- !overwrite && any(idx_dups <- to %in% nms)
+        
+      out <- if (length_diff || has_existing) {
       if (length_diff) {
           msg = c(
             Reason = "lengths differ",
@@ -197,9 +221,9 @@ ArrayEnvironment <- R6Class(
             "Length `to`" = length(to)
           )
         }
-        if (has_dups) {
+        if (has_existing) {
           msg = c(
-            Reason = "duplicates",
+            Reason = "element already exists",
             Duplicates = paste(to[idx_dups], collapse = ", ")
           )
         }
@@ -237,7 +261,7 @@ ArrayEnvironment <- R6Class(
               FALSE
             } else if (strict == 1) {
               conditionr::signalCondition(
-                condition = "InvalidId",
+                condition = "Invalid",
                 msg = c(
                   Reason = "Invalid ID",
                   ID = from
@@ -248,7 +272,7 @@ ArrayEnvironment <- R6Class(
               FALSE
             } else if (strict == 2) {
               conditionr::signalCondition(
-                condition = "InvalidId",
+                condition = "Invalid",
                 msg = c(
                   Reason = "Invalid ID",
                   ID = from
@@ -267,13 +291,28 @@ ArrayEnvironment <- R6Class(
       rm(list = ls(self$.array, all.names = TRUE), envir = self$.array)
       TRUE
     },
-    exists = function(id) {
-      sapply(as.character(id), function(ii) {
-        exists(ii, envir = self$.array, inherits = FALSE)
-      })
+#     exists = function(id) {
+    exists = function(..., char = FALSE) {
+      id <- unlist(list(...))
+      ## Index object type //
+      out <- if (inherits(id, c("numeric", "integer")) && !char) {
+        scope <- 1:length(self$.array)
+        structure(id %in% scope, names = id)
+      } else {
+        id <- as.character(id)  
+        sapply(id, function(ii) {
+          exists(ii, envir = self$.array, inherits = FALSE)
+        })
+      }
+      out
     },
-    get = function(id = character(), char = FALSE, all_names = FALSE, list = FALSE, 
-      default = NULL, inner = TRUE, simplify = TRUE, sorted = TRUE, strict = 0) {
+#     get = function(id = character(), all_names = FALSE, char = FALSE, 
+    get = function(..., all_names = FALSE, char = FALSE,                    
+      default = NULL, inner = TRUE, list = FALSE,  
+      simplify = TRUE, sorted = TRUE, strict = 0) {
+      
+      id <- unlist(list(...))
+      ## Index object type //
       if (inherits(id, c("numeric", "integer")) && !char) {
         nms <- if (sorted) {
           self$.order(all_names = all_names)
@@ -287,12 +326,14 @@ ArrayEnvironment <- R6Class(
       } else {
         id <- as.character(id)  
       }
-      out <- if (strict > 0 && !all(idx <- id %in% ls(self$.array, all.names = TRUE))) {
+      out <- if (strict > 0 && 
+        !all(idx <- id %in% ls(self$.array, all.names = TRUE))) {
+        
         if (strict == 0) {
           TRUE
         } else if (strict == 1) {
           conditionr::signalCondition(
-            condition = "InvalidId",
+            condition = "Invalid",
             msg = c(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
@@ -303,7 +344,7 @@ ArrayEnvironment <- R6Class(
           TRUE
         } else if (strict == 2) {
           conditionr::signalCondition(
-            condition = "InvalidId",
+            condition = "Invalid",
             msg = c(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
@@ -322,7 +363,7 @@ ArrayEnvironment <- R6Class(
             this <- as.list(self$.array)
             out <- if (inner) this[[ii]] else this[ii]
             if (!is.null(names(out)) && all(is.na(names(out)))) {
-              out <- default
+              out <- if (inner) default else structure(list(default), names = ii)
             }
             out
           })
@@ -348,9 +389,11 @@ ArrayEnvironment <- R6Class(
       }
       out
     },
-    index = function(id, strict = 0, simplify = FALSE) {
-      id <- as.character(id)
-      idx <- sort(id) %in% sort(ls(self$.array, all.names = TRUE))
+#     index = function(id, all_names = FALSE, simplify = FALSE, strict = 0) {
+    index = function(..., all_names = FALSE, simplify = FALSE, strict = 0) {
+#       id <- as.character(id)
+      id <- as.character(unlist(list(...)))
+      idx <- sort(id) %in% sort(ls(self$.array, all.names = all_names))
       out <- if (strict > 0 && !all(idx)) {
         if (strict == 0) {
           idx
@@ -380,8 +423,10 @@ ArrayEnvironment <- R6Class(
         idx
       }
 #       if (any(out)) {
-        out <- rep(NA, length(id))
-        val <- as.numeric(which(sort(ls(self$.array, all.names = TRUE)) %in% sort(id)))
+        out <- rep(NA_integer_, length(id))
+        val <- as.numeric(
+          which(sort(ls(self$.array, all.names = TRUE)) %in% sort(id))
+        )
         if (length(val)) {
           out[idx] <- val
         }
@@ -563,8 +608,10 @@ ArrayEnvironment <- R6Class(
       idx <- self$.order(all_names = all_names)
       as.list(self$.array, all.names = all_names)[idx]
     },
-    set = function(..., id = character(), must_exist = TRUE, dups = TRUE, strict = 0) {      
-      self$add(..., id = id, must_exist = must_exist, dups = dups, strict = strict)
+    set = function(..., id = character(), must_exist = TRUE, 
+      overwrite = TRUE, strict = 0) {      
+      self$add(..., id = id, must_exist = must_exist, 
+        overwrite = overwrite, strict = strict)
     }
   )
 )
