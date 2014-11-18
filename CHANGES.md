@@ -1,3 +1,8 @@
+# Version 0.1.6
+ - build v0.1.5, numeric indexes
+
+----------
+
 # Version 0.1.5
  - build v0.1.4
 
