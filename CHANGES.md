@@ -1,3 +1,12 @@
+# Version 0.1.7
+ - Merge branch 'release-0.1.6'
+ - build v0.1.6
+ - Merge branch 'release-0.1.5'
+ - Merge branch 'release-0.1.4'
+ - Merge branch 'release-0.1.3'
+
+----------
+
 # Version 0.1.6
  - build v0.1.5, numeric indexes
 
