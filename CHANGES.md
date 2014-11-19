@@ -1,3 +1,9 @@
+# Version 0.1.8
+ - Merge branch 'master' into develop
+ - build v0.1.7
+
+----------
+
 # Version 0.1.7
  - Merge branch 'release-0.1.6'
  - build v0.1.6
