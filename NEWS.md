@@ -1,3 +1,32 @@
+# CHANGES IN arrayr VERSION 0.1.8
+
+## NEW FEATURES
+
+- private method: `ArrayEnvironment$.getNumericKeys()`
+  Retrieve numeric key values.
+  
+- private method: `ArrayEnvironment$.indexNumericKeys()`
+  Retrieve numeric key values.  
+  
+- private method: `ArrayEnvironment$.autoadjustNumericKeys()`
+  Automatical sequence adjustment for `numeric` keys.
+  Mimicks the respective behavior when manipulating the structure of **unnamed** `list`s via `numeric` indexes (e.g. when removing the *5th* list element of a list of length `6`, the labels/keys are automatically adjusted so that there is a new 5th element)
+  
+- argument `numonly` in `ArrayEnvironment$rm()`:
+  when using a `numeric` index, should only `numeric` keys or also 
+  `character` keys be considered? Has to do with auto-adjusting numerical 
+  keys
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.7
 
 ## NEW FEATURES
