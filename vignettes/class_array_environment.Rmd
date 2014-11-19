@@ -422,6 +422,50 @@ inst$rm(id = 1:3, sorted = FALSE, all_names = TRUE)
 inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
 ```
 
+### Auto-adjusting sequence for numeric keys
+
+```
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2)
+inst$rm(1:2)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 4)
+inst$get(list = TRUE)
+```
+
+Numonly:
+
+```
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 6)
+inst$get(list = TRUE)
+## --> 6th position was `a` --> not removed due to `numonly = TRUE`
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 6, numonly = FALSE)
+inst$get(list = TRUE)
+## --> 6th position was `a` --> not removed due to `numonly = FALSE`
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:5)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:6)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:6, numonly = FALSE)
+inst$get(list = TRUE)
+```
+
 ### Remove first
 
 ```

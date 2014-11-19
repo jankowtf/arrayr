@@ -76,53 +76,6 @@ inst$index("1")
 inst$index(1, 2)
 ```
 
-## Clear 
-
-```
-inst$clear()
-inst$get(list = TRUE)
-```
-
-## Remove 
-
-```
-inst <- ArrayEnvironment$new(list(1, a = 1, b = 1))
-inst$get(list = TRUE)
-inst$rm("a")
-inst$exists("a")
-inst$rm(c("b", "c"))
-inst$get(list = TRUE)
-
-inst$rm("a")
-try(inst$rm("a", strict = 1))
-try(inst$rm("a", strict = 2))
-
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1, d = 1))
-inst$rm(1)
-inst$rm(1, 3)
-inst$get(list = TRUE)
-```
-
-## Remove first 
-
-```
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
-inst$rmFirst()
-inst$get(list = TRUE)
-inst$rmFirst(2)
-inst$get(list = TRUE)
-```
-
-## Remove last
-
-```
-inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
-inst$rmLast()
-inst$get(list = TRUE)
-inst$rmLast(2)
-inst$get(list = TRUE)
-```
-
 ## Copy
 
 ### Single/character
@@ -160,6 +113,99 @@ inst$get(list = TRUE)
 inst$copy(c("a", "b"), c("c", "d"))
 inst$get(list = TRUE)
 ```
+
+## Remove 
+
+### Basics 
+
+```
+inst <- ArrayEnvironment$new(list(1, a = 1, b = 1))
+inst$get(list = TRUE)
+inst$rm("a")
+inst$exists("a")
+inst$rm(c("b", "c"))
+inst$get(list = TRUE)
+
+inst$rm("a")
+try(inst$rm("a", strict = 1))
+try(inst$rm("a", strict = 2))
+
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1, d = 1))
+inst$rm(1)
+inst$rm(1, 3)
+inst$get(list = TRUE)
+```
+
+### Auto-adjusting sequence for numeric keys
+
+```
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2)
+inst$rm(1:2)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 4)
+inst$get(list = TRUE)
+```
+
+Numonly:
+
+```
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 6)
+inst$get(list = TRUE)
+## --> 6th position was `a` --> not removed due to `numonly = TRUE`
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(2, 6, numonly = FALSE)
+inst$get(list = TRUE)
+## --> 6th position was `a` --> not removed due to `numonly = FALSE`
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:5)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:6)
+inst$get(list = TRUE)
+
+inst <- ArrayEnvironment$new("1" = 1, a = 1, "2" = 2, 
+  b = 1, "3" = 3, "4" = 4, "5" = 5)
+inst$rm(1:6, numonly = FALSE)
+inst$get(list = TRUE)
+```
+
+## Remove first 
+
+```
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rmFirst()
+inst$get(list = TRUE)
+inst$rmFirst(2)
+inst$get(list = TRUE)
+```
+
+## Remove last
+
+```
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rmLast()
+inst$get(list = TRUE)
+inst$rmLast(2)
+inst$get(list = TRUE)
+```
+## Clear 
+
+```
+inst$clear()
+inst$get(list = TRUE)
+```
+
 ----------
 
 ## Class `Array` (list based)

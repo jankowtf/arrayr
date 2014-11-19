@@ -30,6 +30,43 @@ ArrayEnvironment <- R6Class(
         self$.set(value)
       }
     },
+    .autoadjustNumericKeys = function(nms = NULL, id) {
+      nms <- self$.order(all_names = TRUE)
+      if (!is.null(nms)) {
+        idx_num <- grepl("^\\d*$", nms)
+        if (any(idx_num)) {
+          tmp <- nms[idx_num]
+          sapply(seq(along = tmp), function(ii) {
+            from <- as.character(tmp[ii])
+            to <- as.character(ii)
+            if (from != to) {
+              assign(to, self$get(from), envir = self$.array)    
+              rm(list = from, envir = self$.array, inherits = FALSE)
+            }
+          })
+        }
+        TRUE
+      } else {
+        FALSE
+      }
+    },
+    .getNumericKeys = function() {
+      nms <- self$.order(all_names = TRUE)
+      idx_num <- grepl("^\\d*$", nms)
+      if (length(idx_num)) {
+        nms[idx_num]
+      } else {
+        nms
+      }
+    },
+    .indexNumericKeys = function(sorted = TRUE, all_names = FALSE) {
+      nms <- if (sorted) {
+        self$.order(all_names = all_names)
+      } else {
+        ls(self$.array, all.names = all_names)
+      }
+      grep("^\\d*$", nms)
+    },
     .set = function(value, intnum = TRUE) {
       if (inherits(value, "environment")) {
         value <- list(value)
@@ -55,6 +92,13 @@ ArrayEnvironment <- R6Class(
         assign(name, value, envir = self$.array)  
         structure(TRUE, names = name)
       })
+    },
+    apply = function(x, fun, ...) {
+      lapply(self$get(x, ...), fun, ...)
+    },
+    mapReduce = function(x, fun, ...) {
+      warning("This method is just an experiment; do not depend on it!")
+      fun(unlist(self$get(x, ...)), ...)
     },
     add = function(..., id = character(), must_exist = FALSE, 
       overwrite = TRUE, strict = 0) {      
@@ -309,6 +353,7 @@ ArrayEnvironment <- R6Class(
       }
       out
     },
+    
 #     get = function(id = character(), all_names = FALSE, char = FALSE, 
     get = function(..., all_names = FALSE, char = FALSE,                    
       default = NULL, inner = TRUE, list = FALSE,  
@@ -452,19 +497,27 @@ ArrayEnvironment <- R6Class(
       }
       nms
     },
-    rm = function(..., all_names = FALSE, sorted = TRUE, strict = 0) {
-      id <- unlist(list(...))
+    rm = function(..., all_names = FALSE, numonly = TRUE, 
+      sorted = TRUE, strict = 0) {
+      
+      id <<- unlist(list(...))
       if (inherits(id, c("numeric", "integer"))) {
-        nms <- if (sorted) {
+        nms <- if (sorted || numonly) {
           self$.order(all_names = all_names)
         } else {
           ls(self$.array, all.names = all_names)
         }
-        id <- nms[id]
+        if (numonly) {
+          nms <- self$.getNumericKeys() 
+          id <- nms[nms %in% id]
+        } else {
+          id <- nms[id]  
+        }
         if (length(id)) {
           id <- if (any(is.na(id))) idx[-which(is.na(id))] else id
         }
       } else {
+        nms <- NULL
         id <- as.character(id)  
       }
       idx <- sapply(id, exists, envir = self$.array, inherits = FALSE)
@@ -498,6 +551,7 @@ ArrayEnvironment <- R6Class(
       }   
       if (out) {
         rm(list = id[idx], envir = self$.array, inherits = FALSE)
+        self$.autoadjustNumericKeys(nms = nms, id = id)
       } 
       out <- idx
       out
