@@ -387,6 +387,10 @@ inst$rm("a")
 try(inst$rm("a", strict = 1))
 try(inst$rm("a", strict = 2))
 
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rm("a", "c")
+inst$get(list = TRUE)
+
 ## Numerical index //
 ## Sorted:
 inst <- ArrayEnvironment$new(list(a = 1, b = 1, 
@@ -402,6 +406,10 @@ inst <- ArrayEnvironment$new(list(a = 1, b = 1,
 inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
 inst$rm(id = 1:3, sorted = FALSE, all_names = TRUE)
 inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
+
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1))
+inst$rm(1, 3)
+inst$get(list = TRUE)
 
 ##------------------------------------------------------------------------------
 ## Remove first //

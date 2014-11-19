@@ -157,6 +157,14 @@ test_that("ArrayEnvironment/add/list/single/unnamed", {
   
 })
 
+test_that("ArrayEnvironment/add/list/single/unnamed/data frame", {
+  
+  expect_is(inst <- ArrayEnvironment$new(), "ArrayEnvironment")
+  expect_true(inst$add(data.frame(1:3)))
+  expect_true(inst$get(list = TRUE))
+  
+})
+
 test_that("ArrayEnvironment/add/list/multiple/named", {
   
   expect_is(inst <- ArrayEnvironment$new(), "ArrayEnvironment")
@@ -503,6 +511,11 @@ test_that("ArrayEnvironment/remove/character", {
   expect_warning(expect_false(inst$rm("a", strict = 1)))
   expect_error(inst$rm("a", strict = 2))
   
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1)), 
+    "ArrayEnvironment")
+  expect_true(all(inst$rm("a", "c")))
+  expect_identical(inst$get(list = TRUE), list(b = 1))
+  
 })
 
 test_that("ArrayEnvironment/remove/numeric", {  
@@ -522,6 +535,11 @@ test_that("ArrayEnvironment/remove/numeric", {
   inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
   expect_true(all(inst$rm(id = 1:2, sorted = FALSE, all_names = TRUE)))
   inst$get(list = TRUE, sorted = FALSE, all_names = TRUE)
+  
+  expect_is(inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1)), 
+    "ArrayEnvironment")
+  expect_true(all(inst$rm(1, 3)))
+  expect_identical(inst$get(list = TRUE), list(b = 1))
   
 })
 

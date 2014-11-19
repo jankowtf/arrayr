@@ -34,6 +34,9 @@ ArrayEnvironment <- R6Class(
       if (inherits(value, "environment")) {
         value <- list(value)
       }
+      if (inherits(value, "data.frame")) {
+        value <- list(value)
+      }
       sapply(seq(along = value), function(ii) {
         name <- names(value[ii])
         value <- value[[ii]]
@@ -449,7 +452,8 @@ ArrayEnvironment <- R6Class(
       }
       nms
     },
-    rm = function(id, all_names = FALSE, sorted = TRUE, strict = 0) {
+    rm = function(..., all_names = FALSE, sorted = TRUE, strict = 0) {
+      id <- unlist(list(...))
       if (inherits(id, c("numeric", "integer"))) {
         nms <- if (sorted) {
           self$.order(all_names = all_names)

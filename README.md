@@ -91,11 +91,16 @@ inst$get(list = TRUE)
 inst$rm("a")
 inst$exists("a")
 inst$rm(c("b", "c"))
-inst$rm(1)
 inst$get(list = TRUE)
+
 inst$rm("a")
 try(inst$rm("a", strict = 1))
 try(inst$rm("a", strict = 2))
+
+inst <- ArrayEnvironment$new(list(a = 1, b = 1, c = 1, d = 1))
+inst$rm(1)
+inst$rm(1, 3)
+inst$get(list = TRUE)
 ```
 
 ## Remove first 
