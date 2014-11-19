@@ -1,3 +1,20 @@
+# CHANGES IN arrayr VERSION 0.1.7
+
+## NEW FEATURES
+
+## BUG FIXES
+
+## MAJOR CHANGES
+
+- M: argument `id` to `...` in `ArrayEnviroment$rm()`
+  Allows the specification via `c()` or `<1>, <2>, ..., <n>`  
+
+## MINOR CHANGES
+
+## MISC
+
+-----
+
 # CHANGES IN arrayr VERSION 0.1.6
 
 ## NEW FEATURES

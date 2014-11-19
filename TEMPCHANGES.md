@@ -1,4 +1,4 @@
-# CHANGES IN arrayr from VERSION 0.1.5 to VERSION 0.1.6
+# CHANGES IN arrayr from VERSION 0.1.6 to VERSION 0.1.7
 
 ## NEW FEATURES
 
