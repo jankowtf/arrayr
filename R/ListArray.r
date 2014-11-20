@@ -1,26 +1,26 @@
 #' @title
-#' Class: Array
+#' Class: ListArray
 #'
 #' @description
-#' Class representing arrays.
+#' Class representing ListArrays.
 #'    
 #' @field .array \code{\link{list}}.
-#'  List that serves as an array container.
-#' @example inst/examples/Array.r
+#'  List that serves as an ListArray container.
+#' @example inst/examples/ListArray.r
 #' @template author
 #' @template references
 #' @import conditionr
 #' @import R6
 #' @export
-Array <- R6Class(
-  classname = "Array",
+ListArray <- R6Class(
+  classname = "ListArray",
 #   inherit = ReactrObservable,
   portable = TRUE,
   public = list(
     .array = "list",
     initialize = function(...) {
       self$.array <- structure(list(), names = character())
-      value <- list(...)
+      value <<- list(...)
       value_length <- length(value)
       if (value_length > 0)  {
         if (value_length == 1 && is.null(names(value))) {
@@ -28,52 +28,84 @@ Array <- R6Class(
         } else if (value_length >= 2 && is.null(names(value))) {
           value <- unlist(value,recursive = FALSE)
         }        
-        self$.array <- value
+#         self$.array <- value
+        self$.set(value)
       }
     },
+    .set = function(value, id = character(), intnum = TRUE) {
+      if (inherits(value, "environment")) {
+        value <- list(value)
+      }
+      if (inherits(value, "data.frame")) {
+        value <- list(value)
+      }
+## TODO: issue #3      
+      sapply(seq(along = value), function(ii) {
+        name <- names(value[ii])
+        value <- value[[ii]]
+        if (inherits(value, "integer") && intnum) {
+          value <- as.numeric(value)
+        }
+        if (is.null(name) || name == "") {
+          has_name <- FALSE
+          .names <- names(self$.array)
+          .nums <- grep("^\\d*$", .names, value = TRUE)
+          name <- if (length(.nums) && !all(.nums == "")) {
+            as.character(max(sort(as.numeric(.nums))) + 1)
+          }
+        } else {
+          has_name <- TRUE
+        }        
+        if (class(value) != "list" || has_name) {
+          value <- structure(list(value), names = name)
+        }
+        if (length(id) && inherits(id, c("integer", "numeric"))) {
+          self$.array[id] <- value
+        } else {
+          self$.array <- c(self$.array, value)
+        }
+        structure(TRUE, names = name)
+      })
+    },
     add = function(..., id = character(), dups = TRUE, strict = 0) {  
-      id <- as.character(id)
+#       id <- as.character(id)
       value <- list(...)   
+      nms <- names(self$.array)
       if (!length(id)) {
-        nms <- names(self$.array)
         out <- unlist(lapply(seq(along = value), function(ii) {
           name <- names(value[ii])
           value <- value[[ii]]
           if (!is.null(name)) {
             value <- structure(list(value), names = name)
           }
-          out <- if (!dups && any(names(value) %in% nms)) {
+          has_dups <- !dups && any(idx_dups <- names(value) %in% nms)
+          out <- if (has_dups) {
             if (strict == 0) {
-              FALSE
+              structure(FALSE, names = names(value))
             } else if (strict == 1) {
               conditionr::signalCondition(
                 condition = "Duplicates",
                 msg = c(
                   Reason = "duplicates",
-                  IDs = names(value)[which(names(value) %in% names(self$.array))]
+                  IDs = names(value)[which(idx_dups)]
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "warning"
               )  
-              FALSE
+              structure(FALSE, names = names(value))
             } else if (strict == 2) {
               conditionr::signalCondition(
                 condition = "Duplicates",
                 msg = c(
                   Reason = "duplicates",
-                  IDs = names(value)[which(names(value) %in% names(self$.array))]
+                  IDs = names(value)[which(idx_dups)]
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "error"
               )
             }
           } else {
-            self$.array <- c(self$.array, value)  
-            if (inherits(value, "environment")) {
-              structure(rep(TRUE, 1), names = names(value)) 
-            } else {
-              structure(rep(TRUE, length(value)), names = names(value)) 
-            }
+            self$.set(value)
           }
           out
         }))
@@ -89,7 +121,7 @@ Array <- R6Class(
                 "Length `value`" = length(value),
                 "Length `id`" = length(id)
               ),
-              ns = "Array",
+              ns = "ListArray",
               type = "warning"
             )  
             FALSE
@@ -101,7 +133,7 @@ Array <- R6Class(
                 "Length `value`" = length(value),
                 "Length `id`" = length(id)
               ),
-              ns = "Array",
+              ns = "ListArray",
               type = "error"
             )
           }
@@ -109,43 +141,40 @@ Array <- R6Class(
           TRUE
         }
         if (out) {
-          nms <- names(self$.array)
           out <- sapply(seq(along = value), function(ii) {
             value <- list(value[[ii]])
-            names(value) <- id[[ii]]
-            
-            if (!dups && any(id[[ii]] %in% nms)) {
+            id <- id[[ii]]
+            if (!inherits(id, c("integer", "numeric"))) {
+              names(value) <- id
+            }
+            has_dups <- !dups && any(idx_dups <- id %in% nms)
+            if (has_dups) {
               out <- if (strict == 0) {
-                structure(FALSE, names = id[[ii]])
+                structure(FALSE, names = id)
               } else if (strict == 1) {
                 conditionr::signalCondition(
                   condition = "Duplicates",
                   msg = c(
                     Reason = "duplicates",
-                    IDs = id[which(id %in% names(self$.array))]
+                    IDs = id[which(idx_dups)]
                   ),
-                  ns = "Array",
+                  ns = "ListArray",
                   type = "warning"
                 )  
-                structure(FALSE, names = id[[ii]])
+                structure(FALSE, names = id)
               } else if (strict == 2) {
                 conditionr::signalCondition(
                   condition = "Duplicates",
                   msg = c(
                     Reason = "duplicates",
-                    IDs = id[which(id %in% names(self$.array))]
+                    IDs = id[which(idx_dups)]
                   ),
-                  ns = "Array",
+                  ns = "ListArray",
                   type = "error"
                 )
               }
             } else {
-              self$.array <- c(self$.array, value)  
-              if (inherits(value, "environment")) {
-                structure(rep(TRUE, 1), names = names(value)) 
-              } else {
-                structure(rep(TRUE, length(value)), names = names(value)) 
-              }
+              self$.set(value, id = id)
             }
           })
         }
@@ -178,7 +207,7 @@ Array <- R6Class(
           conditionr::signalCondition(
             condition = "InvalidConstellation",
             msg = msg,
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )
           structure(rep(FALSE, length(from)), names = from)
@@ -186,7 +215,7 @@ Array <- R6Class(
           conditionr::signalCondition(
             condition = "InvalidConstellation",
             msg = msg,
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -211,7 +240,7 @@ Array <- R6Class(
                   Reason = "Invalid ID",
                   ID = from
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "warning"
               )
               FALSE
@@ -222,7 +251,7 @@ Array <- R6Class(
                   Reason = "Invalid ID",
                   ID = from
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "error"
               )
             }
@@ -254,7 +283,7 @@ Array <- R6Class(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )  
           TRUE
@@ -265,7 +294,7 @@ Array <- R6Class(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -307,7 +336,7 @@ Array <- R6Class(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )  
           idx
@@ -318,7 +347,7 @@ Array <- R6Class(
               Reason = "invalid ID(s)",
               IDs = id[!idx]
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -353,7 +382,7 @@ Array <- R6Class(
               Reason = "invalid ID",
               IDs = paste(id[!idx], collapse = ", ")
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )
           if (length(idx)) TRUE else FALSE
@@ -364,7 +393,7 @@ Array <- R6Class(
               Reason = "invalid ID",
               IDs = paste(id[!idx], collapse = ", ")
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -393,7 +422,7 @@ Array <- R6Class(
               Scope = n,
               Length = scope
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )
           out <- structure(rep(FALSE, n), names = 1:n)
@@ -407,7 +436,7 @@ Array <- R6Class(
               Scope = n,
               Length = scope
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -437,7 +466,7 @@ Array <- R6Class(
               Scope = n,
               Length = scope
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "warning"
           )
           out <- structure(rep(FALSE, n), names = scope:(scope - (n - 1)))
@@ -453,7 +482,7 @@ Array <- R6Class(
               Scope = n,
               Length = scope
             ),
-            ns = "Array",
+            ns = "ListArray",
             type = "error"
           )
         }
@@ -482,7 +511,7 @@ Array <- R6Class(
                   Reason = "component does not exist",
                   IDs = names(value)[which(!names(value) %in% nms)]
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "warning"
               )  
               FALSE
@@ -493,7 +522,7 @@ Array <- R6Class(
                   Reason = "component does not exist",
                   IDs = names(value)[which(!names(value) %in% names(self$.array))]
                 ),
-                ns = "Array",
+                ns = "ListArray",
                 type = "error"
               )
             }
@@ -518,7 +547,7 @@ Array <- R6Class(
                 "Length `value`" = length(value),
                 "Length `id`" = length(id)
               ),
-              ns = "Array",
+              ns = "ListArray",
               type = "warning"
             )  
             FALSE
@@ -530,7 +559,7 @@ Array <- R6Class(
                 "Length `value`" = length(value),
                 "Length `id`" = length(id)
               ),
-              ns = "Array",
+              ns = "ListArray",
               type = "error"
             )
           }
@@ -553,7 +582,7 @@ Array <- R6Class(
                     Reason = "component does not exist",
                     IDs = id[which(!id %in% names(self$.array))]
                   ),
-                  ns = "Array",
+                  ns = "ListArray",
                   type = "warning"
                 )  
                 structure(FALSE, names = id[[ii]])
@@ -564,7 +593,7 @@ Array <- R6Class(
                     Reason = "component does not exist",
                     IDs = id[which(!id %in% names(self$.array))]
                   ),
-                  ns = "Array",
+                  ns = "ListArray",
                   type = "error"
                 )
               }

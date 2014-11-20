@@ -5,27 +5,62 @@
 ##------------------------------------------------------------------------------
 
 ## Default //
-inst <- Array$new()
+inst <- ListArray$new()
 inst$.array
 
-## Explicit //
-inst <- Array$new(list(a = 1, b = 2))
+## Explicit: list/named //
+inst <- ListArray$new(list(a = 1, b = 2))
 inst$.array
-inst <- Array$new(list(c = 1), list(d = 2))
+inst <- ListArray$new(list(c = 1), list(d = 2))
 inst$.array
 
-## Atomic and mixed //
-inst <- Array$new(a = 1, b = 2)
+## Explicit: list/unnamed //
+inst <- ListArray$new(list(1, 2))
 inst$.array
-inst <- Array$new(a = 1, list(b = 2))
+inst <- ListArray$new(list(1), list(2))
+inst$.array
+
+## Explicit: list/mixed //
+inst <- ListArray$new(list(1, a = 2))
+inst$.array
+inst <- ListArray$new(list(1), list(a = 2))
+inst$.array
+
+## Explicit: atomic/named //
+inst <- ListArray$new(a = 1, b = 2)
+inst$.array
+
+## Explicit: atomic/unnamed //
+inst <- ListArray$new(1, 2)
+inst$.array
+
+## Explicit: atomic/mixed //
+inst <- ListArray$new(1, a = 2)
+inst$.array
+
+## Explicit: mixed //
+inst <- ListArray$new(list(1), list(a = 1), 1, b = 1)
 inst$.array
 
 ##------------------------------------------------------------------------------
 ## Add //
 ##------------------------------------------------------------------------------
 
-## Single //
-inst <- Array$new()
+##########
+## List ##
+##########
+
+## Single: unnamed //
+inst <- ListArray$new()
+inst$add(list(1))
+inst$.array
+inst$add(list(2))
+inst$.array
+inst$add(list(2))
+inst$.array
+
+## Single: named //
+inst <- ListArray$new()
 inst$add(list(a = 1))
 inst$.array
 inst$add(list(b = 2))
@@ -41,30 +76,60 @@ inst$.array
 inst$add(list(b = 2))
 inst$.array
 
-## Single atomic //
-inst <- Array$new()
+## Multiple //
+inst <- ListArray$new()
+inst$add(list(a = 1, b = 2))
+inst$.array
+inst$add(list(a = 1), list(b = 2))
+inst$.array
+inst$add(list(1, 2))
+inst$.array
+inst$add(list(1), list(2))
+inst$.array
+
+############
+## Atomic ##
+############
+
+## Unnamed //
+inst <- ListArray$new()
 inst$add(1)
 inst$.array
 inst$add(new.env())
 inst$.array
-inst$add(a = new.env())
+inst$add(1, 2, 3)
+inst$.array
+inst$add(1:3)
+inst$.array
+
+## Named //
+inst <- ListArray$new()
+inst$add(a = 1)
 inst$.array
 inst$add(b = 1)
 inst$.array
-
-## Multiple //
-inst <- Array$new()
-inst$add(list(a = 1), list(b = 2))
+inst$add(a = 1, b = 1, c = 1)
 inst$.array
 
-inst$add(1, 1, 1, id = c("c", "d", "e"))
+##############
+## With IDs ##
+##############
+
+inst <- ListArray$new()
+inst$add(1, 1, 1, id = c("a", "b", "c"))
 inst$.array
 
-inst$add(1, 1, 1, id = c("e", "f"), dups = FALSE)
+inst$add(1, 1, 1, id = 5:7)
 inst$.array
+## --> note how position 4 is `NULL`; numeric `id` is 
+## interpeted as position index
 
-inst <- Array$new()
+inst$add(1, 1, 1, id = c("c", "d"), dups = FALSE)
+inst$.array
+## --> duplicates detected
+
 inst$add(1, 1, 1, id = c("a", "b"))
+## --> wrong dimensions
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 1))
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
 
@@ -73,7 +138,7 @@ try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
 ##------------------------------------------------------------------------------
 
 ## Single //
-inst <- Array$new(list(a = 1))
+inst <- ListArray$new(list(a = 1))
 inst$set(list(a = 2))
 inst$.array
 inst$set(list(b = 2))
@@ -82,11 +147,11 @@ try(inst$set(list(b = 2), strict = 2))
 inst$.array
 
 ## Multiple //
-inst <- Array$new(list(a = 1, b = 1))
+inst <- ListArray$new(list(a = 1, b = 1))
 inst$set(list(a = 2), list(b = 2))
 inst$.array
 
-inst <- Array$new(list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(list(a = 1, b = 1, c = 1))
 inst$set(2, 2, 2, id = c("a", "b", "c"))
 inst$.array
 
@@ -101,7 +166,7 @@ try(inst$set(2, 2, 2, id = c("b", "c"), strict = 1))
 try(inst$set(2, 2, 2, id = c("b", "c"), strict = 2))
 
 ## New (or does not have to exist) //
-inst <- Array$new(list(a = 1))
+inst <- ListArray$new(list(a = 1))
 inst$set(list(b = 1), must_exist = FALSE)
 inst$.array
 inst$set(list(c = 1, d = 1), must_exist = FALSE)
@@ -111,10 +176,10 @@ inst$.array
 ## Get //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new()
+inst <- ListArray$new()
 inst$get()
 
-inst <- Array$new(array = list(a = 1, b = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1))
 inst$.array, list(a = 1, b = 1))
 inst$get()
 
@@ -127,7 +192,7 @@ inst$get("c", inner = FALSE)
 inst$get(c("a", "c"))
 inst$get(c("a", "c"), inner = FALSE)
 
-inst <- Array$new(list(a = 1))
+inst <- ListArray$new(list(a = 1))
 inst$get("b")
 try(inst$get("b", strict = 1))
 try(inst$get("b", strict = 2))
@@ -139,7 +204,7 @@ try(inst$get(c("a", "b"), strict = 2))
 ## Exists //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1))
 inst$exists("a")
 inst$exists(c("a", "b"))
 inst$exists("c")
@@ -148,7 +213,7 @@ inst$exists("c")
 ## Index //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1))
 inst$index("a")
 inst$index(c("a", "b"))
 inst$index("c")
@@ -165,7 +230,7 @@ inst$index(c("a", "c"), simplify = TRUE)
 ## Clear //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1))
 inst$clear()
 inst$.array
 
@@ -173,7 +238,7 @@ inst$.array
 ## Remove //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rm("a")
 inst$exists("a")
 inst$rm(c("b", "c"))
@@ -189,22 +254,22 @@ try(inst$rm("a", strict = 2))
 ## Remove first //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmFirst()
 inst$get()
 inst$rmFirst(2)
 inst$get()
 
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmFirst(4)
 inst$get()
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 try(inst$rmFirst(4, strict = 1))
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 try(inst$rmFirst(4, strict = 2))
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmFirst(4, simplify = TRUE)
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmFirst(3, simplify = TRUE)
 inst$get()
 
@@ -215,33 +280,33 @@ inst$get()
 ## Remove last //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmLast()
 inst$get()
 inst$rmLast(2)
 inst$get()
 
 ## Simplify //
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmLast(simplify = TRUE)
 inst$get()
 inst$rmLast(2, simplify = TRUE)
 inst$get()
 
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmLast(4)
 inst$get()
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 try(inst$rmLast(4, strict = 1))
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 try(inst$rmLast(4, strict = 2))
 
 ## Simplify //
-inst <- Array$new(array = list(a = 1, b = 1, c = 1))
+inst <- ListArray$new(array = list(a = 1, b = 1, c = 1))
 inst$rmLast(4, simplify = TRUE)
 inst$get()
 
-inst <- Array$new()
+inst <- ListArray$new()
 inst$rmLast()
 try(inst$rmLast(strict = 1))
 try(inst$rmLast(strict = 2))
@@ -251,7 +316,7 @@ try(inst$rmLast(strict = 2))
 inst$get()
 
 ## Simplify //
-inst <- Array$new()
+inst <- ListArray$new()
 inst$rmLast(simplify = TRUE)
 try(inst$rmLast(strict = 1, simplify = TRUE))
 inst$rmLast(2, simplify = TRUE)
@@ -261,7 +326,7 @@ try(inst$rmLast(strict = 1, simplify = TRUE))
 ## Copy //
 ##------------------------------------------------------------------------------
 
-inst <- Array$new(array = list(a = 1))
+inst <- ListArray$new(array = list(a = 1))
 inst$copy("a", "b")
 inst$get()
 

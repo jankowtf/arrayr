@@ -1,5 +1,5 @@
 ---
-title: "Class Array"
+title: "Class 'ListArray'"
 author: "Janko Thyson"
 date: "Tuesday, November 18, 2014"
 output: 
@@ -7,4 +7,166 @@ output:
     self_contained: no
 ---
 
-To be added
+## Initialize
+
+### Default
+
+```
+inst <- ListArray$new()
+inst$.array
+```
+
+### Explicit: list/named 
+
+```
+inst <- ListArray$new(list(a = 1, b = 2))
+inst$.array
+inst <- ListArray$new(list(c = 1), list(d = 2))
+inst$.array
+```
+
+### Explicit: list/unnamed
+
+```
+inst <- ListArray$new(list(1, 2))
+inst$.array
+inst <- ListArray$new(list(1), list(2))
+inst$.array
+```
+
+### Explicit: list/mixed 
+
+```
+inst <- ListArray$new(list(1, a = 2))
+inst$.array
+inst <- ListArray$new(list(1), list(a = 2))
+inst$.array
+```
+
+### Explicit: atomic/named 
+
+```
+inst <- ListArray$new(a = 1, b = 2)
+inst$.array
+```
+
+### Explicit: atomic/unnamed
+
+```
+inst <- ListArray$new(1, 2)
+inst$.array
+```
+
+### Explicit: atomic/mixed 
+
+```
+inst <- ListArray$new(1, a = 2)
+inst$.array
+```
+
+### Explicit: mixed
+
+```
+inst <- ListArray$new(list(1), list(a = 1), 1, b = 1)
+inst$.array
+```
+
+## Add
+
+### List
+
+#### Single: unnamed
+
+```
+inst <- ListArray$new()
+inst$add(list(1))
+inst$.array
+inst$add(list(2))
+inst$.array
+inst$add(list(2))
+inst$.array
+```
+
+#### Single: named
+
+```
+inst <- ListArray$new()
+inst$add(list(a = 1))
+inst$.array
+inst$add(list(b = 2))
+inst$.array
+
+inst$add(list(b = 2), dups = FALSE)
+inst$.array
+try(inst$add(list(b = 2), dups = FALSE, strict = 1))
+inst$.array
+try(inst$add(list(b = 2), dups = FALSE, strict = 2))
+inst$.array
+
+inst$add(list(b = 2))
+inst$.array
+```
+
+#### Multiple
+
+```
+inst <- ListArray$new()
+inst$add(list(a = 1, b = 2))
+inst$.array
+inst$add(list(a = 1), list(b = 2))
+inst$.array
+inst$add(list(1, 2))
+inst$.array
+inst$add(list(1), list(2))
+inst$.array
+```
+
+### Atomic
+
+#### Unnamed
+
+```
+inst <- ListArray$new()
+inst$add(1)
+inst$.array
+inst$add(new.env())
+inst$.array
+inst$add(1, 2, 3)
+inst$.array
+inst$add(1:3)
+inst$.array
+```
+
+#### Named
+
+```
+inst <- ListArray$new()
+inst$add(a = 1)
+inst$.array
+inst$add(b = 1)
+inst$.array
+inst$add(a = 1, b = 1, c = 1)
+inst$.array
+```
+
+### With IDs
+
+```
+inst <- ListArray$new()
+inst$add(1, 1, 1, id = c("a", "b", "c"))
+inst$.array
+
+inst$add(1, 1, 1, id = 5:7)
+inst$.array
+## --> note how position 4 is `NULL`; numeric `id` is 
+## interpeted as position index
+
+inst$add(1, 1, 1, id = c("c", "d"), dups = FALSE)
+inst$.array
+## --> duplicates detected
+
+inst$add(1, 1, 1, id = c("a", "b"))
+## --> wrong dimensions
+try(inst$add(1, 1, 1, id = c("a", "b"), strict = 1))
+try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
+```
