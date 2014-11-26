@@ -1,3 +1,10 @@
+# Version 0.1.9
+ - fixes #7 fixes #8 `Array` refactored
+ - refactored until ListArray() method
+ - build v0.1.8
+
+----------
+
 # Version 0.1.8
  - Merge branch 'master' into develop
  - build v0.1.7
