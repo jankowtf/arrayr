@@ -1,5 +1,5 @@
 ---
-title: "Class 'ListArray'"
+title: "Class 'Array'"
 author: "Janko Thyson"
 date: "Tuesday, November 18, 2014"
 output: 
@@ -12,62 +12,62 @@ output:
 ### Default
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$.array
 ```
 
 ### Explicit: list/named 
 
 ```
-inst <- ListArray$new(list(a = 1, b = 2))
+inst <- Array$new(list(a = 1, b = 2))
 inst$.array
-inst <- ListArray$new(list(c = 1), list(d = 2))
+inst <- Array$new(list(c = 1), list(d = 2))
 inst$.array
 ```
 
 ### Explicit: list/unnamed
 
 ```
-inst <- ListArray$new(list(1, 2))
+inst <- Array$new(list(1, 2))
 inst$.array
-inst <- ListArray$new(list(1), list(2))
+inst <- Array$new(list(1), list(2))
 inst$.array
 ```
 
 ### Explicit: list/mixed 
 
 ```
-inst <- ListArray$new(list(1, a = 2))
+inst <- Array$new(list(1, a = 2))
 inst$.array
-inst <- ListArray$new(list(1), list(a = 2))
+inst <- Array$new(list(1), list(a = 2))
 inst$.array
 ```
 
 ### Explicit: atomic/named 
 
 ```
-inst <- ListArray$new(a = 1, b = 2)
+inst <- Array$new(a = 1, b = 2)
 inst$.array
 ```
 
 ### Explicit: atomic/unnamed
 
 ```
-inst <- ListArray$new(1, 2)
+inst <- Array$new(1, 2)
 inst$.array
 ```
 
 ### Explicit: atomic/mixed 
 
 ```
-inst <- ListArray$new(1, a = 2)
+inst <- Array$new(1, a = 2)
 inst$.array
 ```
 
 ### Explicit: mixed
 
 ```
-inst <- ListArray$new(list(1), list(a = 1), 1, b = 1)
+inst <- Array$new(list(1), list(a = 1), 1, b = 1)
 inst$.array
 ```
 
@@ -78,7 +78,7 @@ inst$.array
 #### Single: unnamed
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(list(1))
 inst$.array
 inst$add(list(2))
@@ -90,7 +90,7 @@ inst$.array
 #### Single: named
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(list(a = 1))
 inst$.array
 inst$add(list(b = 2))
@@ -110,7 +110,7 @@ inst$.array
 #### Multiple
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(list(a = 1, b = 2))
 inst$.array
 inst$add(list(a = 1), list(b = 2))
@@ -126,7 +126,7 @@ inst$.array
 #### Unnamed
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(1)
 inst$.array
 inst$add(new.env())
@@ -140,7 +140,7 @@ inst$.array
 #### Named
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(a = 1)
 inst$.array
 inst$add(b = 1)
@@ -152,7 +152,7 @@ inst$.array
 ### With IDs
 
 ```
-inst <- ListArray$new()
+inst <- Array$new()
 inst$add(1, 1, 1, id = c("a", "b", "c"))
 inst$.array
 
@@ -169,4 +169,130 @@ inst$add(1, 1, 1, id = c("a", "b"))
 ## --> wrong dimensions
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 1))
 try(inst$add(1, 1, 1, id = c("a", "b"), strict = 2))
+```
+
+## Get
+
+### List
+
+#### Single
+
+```
+inst <- Array$new(list(a = 1))
+inst$set(list(a = 2))
+inst$.array
+inst$set(list(b = 2))
+try(inst$set(list(b = 2), strict = 1))
+try(inst$set(list(b = 2), strict = 2))
+inst$.array
+```
+
+#### Multiple
+
+```
+inst <- Array$new(list(a = 1, b = 1))
+inst$set(list(a = 2), list(b = 2))
+inst$.array
+```
+
+#### New
+
+```
+inst <- Array$new(list(a = 1))
+inst$set(list(b = 1))
+inst$.array
+inst$set(list(b = 1), must_exist = FALSE)
+inst$.array
+inst$set(list(c = 1, d = 1), must_exist = FALSE)
+inst$.array
+```
+
+#### Unnamed
+
+```
+inst <- Array$new(list(a = 1))
+inst$set(list(2))
+try(inst$set(list(2), strict = 1))
+try(inst$set(list(2), strict = 2))
+inst$.array
+```
+
+### Atomic
+
+#### Single
+
+```
+inst <- Array$new(a = 1)
+inst$set(a = 2)
+inst$.array
+inst$set(b = 2)
+try(inst$set(b = 2, strict = 1))
+try(inst$set(b = 2, strict = 2))
+inst$.array
+```
+
+#### Multiple
+
+```
+inst <- Array$new(a = 1, b = 1)
+inst$set(a = 2, b = 2)
+inst$.array
+```
+
+#### New
+
+```
+inst <- Array$new(a = 1)
+inst$set(b = 1, must_exist = FALSE)
+inst$.array
+inst$set(c = 1, d = 1, must_exist = FALSE)
+inst$.array
+```
+
+#### Unnamed
+
+```
+inst <- Array$new(1)
+inst$set(2)
+try(inst$set(2, strict = 1))
+try(inst$set(2, strict = 2))
+inst$.array
+```
+
+### With IDs
+
+### Single
+
+```
+inst <- Array$new(list(a = 1))
+inst$set(2, id = "a")
+inst$.array
+
+inst$set(1, id = c("a", "b"))
+try(inst$set(1, id = c("a", "b"), strict = 1))
+try(inst$set(1, id = c("a", "b"), strict = 2))
+inst$.array
+```
+
+#### Multiple
+
+```
+inst <- Array$new(list(a = 1, b = 1, c = 1))
+inst$set(2, 2, 2, id = c("a", "b", "c"))
+inst$.array
+
+inst$set(2, 2, 2, id = c("a", "b", "d"))
+inst$.array
+try(inst$set(2, 2, 2, id = c("a", "b", "d"), strict = 1))
+try(inst$set(2, 2, 2, id = c("a", "b", "d"), strict = 2))
+inst$.array
+```
+
+#### Invalid
+
+```
+inst <- Array$new(list(a = 1, b = 1))
+inst$set(2, 2, 2, id = c("b", "c"))
+try(inst$set(2, 2, 2, id = c("b", "c"), strict = 1))
+try(inst$set(2, 2, 2, id = c("b", "c"), strict = 2))
 ```

@@ -556,7 +556,9 @@ ArrayEnvironment <- R6Class(
       out <- if (n > scope) {
         if (strict == 0) {
           out <- structure(rep(FALSE, n), names = 1:n)
-          out[1:scope] <- TRUE
+          if (scope > 0) {
+            out[1:scope] <- TRUE
+          }
           out
         } else if (strict == 1) {
           conditionr::signalCondition(
